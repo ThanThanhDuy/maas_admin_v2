@@ -1,8 +1,13 @@
 <template>
   <div class="containerButton_custom">
-    <a-button type="primary" :icon="iconHeader" @click="handleButton">{{
-      titleButton
-    }}</a-button>
+    <a-button
+      type="primary"
+      :icon="iconHeader"
+      @click="handleButton"
+      :class="iconHeader === 'delete' ? 'antd__button__delete' : ''"
+      :disabled="isDisabled"
+      >{{ titleButton }}</a-button
+    >
   </div>
 </template>
 
@@ -21,6 +26,10 @@ export default {
     iconHeader: {
       type: String,
       default: "",
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
@@ -51,6 +60,17 @@ export default {
     }
     &:focus {
       background-color: $green50;
+      border: none;
+    }
+  }
+  .antd__button__delete {
+    background-color: $red40;
+    &:hover {
+      background-color: $red50;
+      border: none;
+    }
+    &:focus {
+      background-color: $red50;
       border: none;
     }
   }

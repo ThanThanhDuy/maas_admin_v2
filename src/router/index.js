@@ -6,6 +6,9 @@ import Route from "@/views/Route";
 import Login from "@/views/Login";
 import Layout from "@/layout";
 import AddRoute from "@/views/Route/AddRoute";
+import Driver from "@/views/Driver";
+import DriverDetail from "@/views/Driver/DriverDetail";
+import RouteDetail from "@/views/Route/RouteDetail";
 
 Vue.use(VueRouter);
 
@@ -44,6 +47,24 @@ const routes = [
         name: "AddRoute",
         component: AddRoute,
         meta: { title: "ViGo - Create route" },
+      },
+      {
+        path: "driver",
+        name: "Driver",
+        component: Driver,
+        meta: { title: "ViGo - Driver" },
+      },
+      {
+        path: "driver/:code",
+        name: "DriverDetail",
+        component: DriverDetail,
+        meta: { title: "ViGo - Driver Detail" },
+      },
+      {
+        path: "route/:code",
+        name: "RouteDetail",
+        component: RouteDetail,
+        meta: { title: "ViGo - Route Detail" },
       },
     ],
     redirect: "/dashboard",

@@ -121,8 +121,7 @@ export default {
       }
     }
     .ant-menu-item-selected {
-      background-color: $green40;
-      color: red;
+      // background-color: $green40;
       &::after {
         border-right: 3px solid $green50;
       }

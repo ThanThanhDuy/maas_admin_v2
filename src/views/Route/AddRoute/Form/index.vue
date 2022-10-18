@@ -1,16 +1,22 @@
 <template>
   <div>
-    <div class="containerFormSave">
+    <div class="containerFormSave" v-if="listStationProps.length > 0">
+      <ButtonVue
+        v-if="showDelete"
+        :iconHeader="iconDelete"
+        :titleButton="titleDelete"
+      />
       <ButtonVue
         :iconHeader="iconSave"
         :titleButton="titleSave"
         :handleClickButton="handleClickButtonSave"
+        :isDisabled="listStationProps.length >= 2 ? false : true"
       />
     </div>
-    <div class="containerFormRoute">
+    <div class="containerFormRoute" v-if="listStationProps.length > 0">
       <div
         class="containerFormRoute__box"
-        v-for="(station, index) in listStation"
+        v-for="(station, index) in listStationProps"
         :key="index"
       >
         <div class="containerFormRoute__box__order">
@@ -19,30 +25,31 @@
         <div class="containerFormRoute__box__input">
           <a-input
             placeholder="Code Station"
-            v-model="station.code"
+            v-model="station.Code"
             :maxLength="36"
             @change="() => handleChangeCodeStation(index)"
           ></a-input>
         </div>
         <div class="containerFormRoute__box__input">
           <a-auto-complete
-            v-model="station.name"
-            :data-source="dataSource"
+            v-model="station.Name"
+            :data-source="dataSource.map(item => item.Name)"
             placeholder="Name Station"
             @select="value => onSelect(value, index)"
             @search="onSearch"
+            @change="value => handleChangeValue(value, index)"
           >
-            <template slot="dataSource">
-              <!-- <a-select-opt-group v-for="group in dataSource" :key="group.code"> -->
-              <a-select-option
+            <!-- <template slot="dataSource"> -->
+            <!-- <a-select-opt-group v-for="group in dataSource" :key="group.code"> -->
+            <!-- <a-select-option
                 v-for="group in dataSource"
-                :value="group.name"
-                :key="group.code"
+                :value="group.Name"
+                :key="group.Code"
               >
-                {{ group.name }}
-              </a-select-option>
-              <!-- </a-select-opt-group> -->
-            </template>
+                {{ group.Name }}
+              </a-select-option> -->
+            <!-- </a-select-opt-group> -->
+            <!-- </template> -->
           </a-auto-complete>
         </div>
         <div class="containerFormRoute__box__button">
@@ -65,14 +72,21 @@
           </a-popover>
         </div>
       </div>
+
       <!-- add more -->
-      <div class="containerFormRoute__button">
-        <ButtonVue
-          :iconHeader="iconHeader"
-          :titleButton="titleButton"
-          :handleClickButton="handleClickButton"
-        />
-      </div>
+    </div>
+    <div
+      v-else
+      style="display: flex; justify-content: center; margin-top: 50px"
+    >
+      <a-spin />
+    </div>
+    <div class="containerFormRoute__button" v-if="listStationProps.length > 0">
+      <ButtonVue
+        :iconHeader="iconHeader"
+        :titleButton="titleButton"
+        :handleClickButton="handleClickButton"
+      />
     </div>
   </div>
 </template>
@@ -102,78 +116,80 @@ export default {
       type: String,
       default: "save",
     },
+    handleChangeName: {
+      type: Function,
+      default: () => {},
+    },
+    handleChangeCode: {
+      type: Function,
+      default: () => {},
+    },
+    handleAddMore: {
+      type: Function,
+      default: () => {},
+    },
+    handleChangeValueAuto: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
       value: "",
-      dataSource: [],
+      dataSource: this.getStation,
       stations: this.getStation,
       iconHeader: "plus",
       titleButton: "Add more",
       visible: false,
       indexSelected: 0,
-      listStation:
-        this.listStationProps.length > 0
-          ? this.listStationProps
-          : [
-              {
-                code: "",
-                name: "",
-              },
-            ],
-
+      listStation: this.listStationProps,
       titleSave: "Save",
+      iconDelete: "delete",
+      titleDelete: "Delete route",
+      showDelete: false,
     };
   },
   methods: {
     onSearch(searchText) {
       let dataTmp = [];
-      for (const station of this.stations) {
+      for (const station of this.getStation) {
         const index = station.Name.toLowerCase().search(
           searchText.toLowerCase()
         );
         if (index !== -1) {
           dataTmp.push({
-            code: station.Code,
-            name: station.Name,
+            Code: station.Code,
+            Name: station.Name,
           });
         }
       }
       this.dataSource = dataTmp;
     },
     onSelect(value, index) {
-      this.dataSource = this.stations;
-      console.log("onSelect", value, index);
-      this.listStation[index].code = this.stations.find(
-        station => station.Name === value
-      ).Code;
-      this.listStation[index].name = value;
+      this.dataSource = this.getStation;
+      this.handleChangeName(value, index);
     },
     handleClickButton() {
-      this.listStation.push({
-        code: "",
-        name: "",
-      });
+      this.handleAddMore();
     },
     handleOpenMore(index) {
       this.visible = true;
       this.indexSelected = index;
     },
     handleChangeCodeStation(index) {
-      if (this.listStation[index].code) {
-        const station = this.stations.find(
-          station => station.Code === this.listStation[index].code
-        );
-        if (station) {
-          this.listStation[index].name = station.Name;
-        } else {
-          this.listStation[index].name = "";
-        }
-      }
+      this.handleChangeCode(index);
     },
     handleClickButtonSave() {
-      this.handleSave(this.listStation);
+      this.handleSave();
     },
+    handleChangeValue(value, index) {
+      this.handleChangeValueAuto(value, index);
+    },
+  },
+  mounted() {
+    // get name url
+    const name = this.$router.currentRoute.name;
+    if (name === "RouteDetail") this.showDelete = true;
   },
 };
 </script>
@@ -185,17 +201,20 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-right: 16px;
+  gap: 16px;
 }
 .containerFormRoute {
   margin-top: 20px;
   margin-right: 16px;
+  max-height: calc(100vh - 64px - 16px - 40px - 100px);
+  overflow-y: auto;
   &__box {
     display: flex;
     gap: 20px;
     align-items: center;
     margin-bottom: 20px;
     &__input {
-      width: calc((100% - 40px - 40px - 20px - 24px) / 2);
+      width: calc((100% - 40px - 40px - 20px - 34px) / 2);
       .ant-input {
         height: 40px;
         border-radius: 10px;
@@ -246,7 +265,7 @@ export default {
       }
     }
     &__order {
-      width: 20px;
+      width: 24px;
       display: flex;
       justify-content: center;
     }
@@ -255,6 +274,9 @@ export default {
     display: flex;
     width: 100%;
     justify-content: center;
+    height: 55px;
+    align-items: center;
+    margin-top: 10px;
   }
 }
 </style>

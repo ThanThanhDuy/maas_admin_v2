@@ -6,10 +6,10 @@
         :getStation="getStation"
         :handleSave="handleSave"
         :iconSave="iconSave"
-        :listStationProps="getListStationAdd"
+        :listStationProps="getListStationProps"
         :handleChangeName="handleChangeName"
         :handleChangeCode="handleChangeCode"
-        :handleAddMore="handleAddMore"
+        :handleChangeValueAuto="handleChangeValueAuto"
       />
     </div>
     <div style="width: 50%">
@@ -26,7 +26,7 @@
 import HeaderBack from "@/components/commons/HeaderBack";
 import { notification } from "@/utils/notification";
 import { mapActions, mapGetters, mapMutations } from "vuex";
-import FromVue from "./Form";
+import FromVue from "../AddRoute/Form";
 export default {
   name: "AddRoute",
   data() {
@@ -41,22 +41,23 @@ export default {
   computed: {
     ...mapGetters({
       getStation: "station/listStation",
-      getListStationAdd: "route/getListStationAdd",
+      getRouteByCode: "route/getRouteByCode",
+      getListStationProps: "route/getListStationProps",
     }),
   },
   methods: {
     ...mapActions({
       getAllStation: "station/getAllStation",
-      createRouteFromListStation: "route/createRouteFromListStation",
+      funcGetRouteByCode: "route/getRouteByCode",
     }),
     ...mapMutations({
-      setListStationAdd: "route/SET_LIST_STATION_ADD",
+      setListStationProps: "route/SET_LIST_STATION_PROPS",
     }),
-    async handleSave() {
+    async handleSave(listStation) {
       this.iconSave = "loading";
       // check empty data
       let checkEmptyData = true;
-      for (const item of this.getListStationAdd) {
+      for (const item of this.getListStationProps) {
         if (item.Code === "" || item.Name === "") {
           checkEmptyData = false;
           break;
@@ -69,33 +70,22 @@ export default {
         }, 1000);
         return;
       }
-      // add route
-      const data = this.getListStationAdd.map(item => item.Code);
-      const res = await this.createRouteFromListStation(data);
-      console.log(res.StatusCode);
-      if (res && res.StatusCode === 200) {
-        setTimeout(() => {
-          this.iconSave = "save";
-          notification(this, "success", "Create route successfully", "");
-          this.$router.push({ name: "Route" });
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          this.iconSave = "save";
-          notification(this, "error", "Create route failed", "");
-        }, 1000);
-      }
+      // eslint-disable-next-line
+      const data = listStation.map(item => item.Code);
     },
+    // eslint-disable-next-line
     handleChangeName(value, index) {
-      let listStationTmp = [...this.getListStationAdd];
-      listStationTmp[index].Code = this.getStation.find(
-        station => station.Name === value
-      ).Code;
-      listStationTmp[index].Name = value;
-      this.setListStationAdd(listStationTmp);
+      // let listStationTmp = [...this.getListStationProps];
+      // listStationTmp[index].Code = this.getStation.find(
+      //   station => station.Name === value
+      // ).Code;
+      // listStationTmp[index].Name = this.getStation.find(
+      //   station => station.Name === value
+      // ).Name;
+      // this.setListStationProps(listStationTmp);
     },
     handleChangeCode(index) {
-      let listStationTmp = [...this.getListStationAdd];
+      let listStationTmp = [...this.getListStationProps];
       if (listStationTmp[index].Code) {
         const station = this.getStation.find(
           station => station.Code === listStationTmp[index].Code
@@ -106,19 +96,23 @@ export default {
           listStationTmp[index].Name = "";
         }
       }
-      this.setListStationAdd(listStationTmp);
+      this.setListStationProps(listStationTmp);
     },
-    handleAddMore() {
-      let listStationTmp = [...this.getListStationAdd];
-      listStationTmp.push({
-        Code: "",
-        Name: "",
-      });
-      this.setListStationAdd(listStationTmp);
+    handleChangeValueAuto(value, index) {
+      let listStationTmp = [...this.getListStationProps];
+      const station = this.getStation.find(station => station.Name === value);
+      if (station) {
+        listStationTmp[index].Code = station.Code;
+      } else {
+        listStationTmp[index].Code = "";
+      }
+      this.setListStationProps(listStationTmp);
     },
   },
   mounted() {
+    this.setListStationProps([]);
     this.getAllStation();
+    this.funcGetRouteByCode(this.$route.params.code);
   },
 };
 </script>

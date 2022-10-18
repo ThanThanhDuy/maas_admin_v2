@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import auth from "./auth";
 import route from "./route";
 import station from "./station";
+import driver from "./driver";
 
 Vue.use(Vuex);
 
@@ -21,5 +22,5 @@ export default new Vuex.Store({
     },
   },
   actions: {},
-  modules: { auth, route, station },
+  modules: { auth, route, station, driver },
 });
