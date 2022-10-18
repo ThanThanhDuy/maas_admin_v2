@@ -9,6 +9,14 @@ export default {
   state: {
     route: [],
     isLoading: false,
+    routeByCode: {},
+    listStationProps: [],
+    listStationAdd: [
+      {
+        Code: "",
+        Name: "",
+      },
+    ],
   },
   getters: {
     getRoute(state) {
@@ -29,6 +37,15 @@ export default {
     getLoading(state) {
       return state.isLoading;
     },
+    getRouteByCode(state) {
+      return state.routeByCode;
+    },
+    getListStationProps(state) {
+      return state.listStationProps;
+    },
+    getListStationAdd(state) {
+      return state.listStationAdd;
+    },
   },
   mutations: {
     SET_ROUTE(state, route) {
@@ -37,6 +54,15 @@ export default {
     SET_LOADING(state, isLoading) {
       state.isLoading = isLoading;
     },
+    SET_ROUTE_BY_CODE(state, routeByCode) {
+      state.routeByCode = routeByCode;
+    },
+    SET_LIST_STATION_PROPS(state, listStationProps) {
+      state.listStationProps = listStationProps;
+    },
+    SET_LIST_STATION_ADD(state, listStationAdd) {
+      state.listStationAdd = listStationAdd;
+    },
   },
   actions: {
     async getAllRoute({ commit }) {
@@ -44,8 +70,8 @@ export default {
       try {
         const res = await routeService.getAllRoute();
         if (res && res.StatusCode === 200) {
-          console.log(res.Data);
           commit("SET_ROUTE", res.Data);
+
           commit("SET_LOADING", false);
         }
       } catch (error) {
@@ -64,6 +90,27 @@ export default {
       } catch (error) {
         console.log(
           "🚀 ~ file: index.js ~ line 64 ~ createRouteFromListStation ~ error",
+          error
+        );
+      }
+    },
+    async getRouteByCode({ commit }, code) {
+      commit("SET_LOADING", true);
+      try {
+        const res = await routeService.getAllRoute();
+        if (res && res.StatusCode === 200) {
+          const route = res.Data.find(item => item.Code === code);
+          console.log(route);
+          if (route) {
+            commit("SET_LIST_STATION_PROPS", route.Stations);
+            commit("SET_ROUTE_BY_CODE", route);
+            commit("SET_LOADING", false);
+          }
+        }
+      } catch (error) {
+        commit("SET_LOADING", false);
+        console.log(
+          "🚀 ~ file: index.js ~ line 43 ~ getAllRoute ~ error",
           error
         );
       }

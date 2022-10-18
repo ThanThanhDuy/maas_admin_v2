@@ -62,3 +62,54 @@ export const HEADER_ROUTE = [
     sorter: (a, b) => a.station - b.station,
   },
 ];
+
+export const HEADER_DRIVER = [
+  {
+    dataIndex: "Code",
+    key: "Code",
+    title: "Code",
+    width: "20%",
+    sorter: (a, b) => a.code - b.code,
+  },
+  {
+    title: "Name",
+    dataIndex: "Name",
+    key: "Name",
+    width: "15%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+  {
+    title: "Phone",
+    dataIndex: "Phone",
+    key: "Phone",
+    width: "10%",
+  },
+  {
+    title: "Email",
+    key: "Email",
+    dataIndex: "Email",
+    width: "20%",
+  },
+  {
+    title: "Birthdate",
+    key: "Birthdate",
+    dataIndex: "Birthdate",
+    width: "10%",
+  },
+  {
+    title: "Status",
+    key: "StatusDriver",
+    dataIndex: "StatusDriver",
+    scopedSlots: { customRender: "StatusDriver" },
+    width: "10%",
+    align: "left",
+  },
+];
