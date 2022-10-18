@@ -48,7 +48,7 @@ export default {
     border-radius: 10px;
     font-size: $medium;
     font-weight: 400;
-    background-color: $green40;
+    // background-color: $green40;
     // border-color: $black50;
     display: flex;
     align-items: center;

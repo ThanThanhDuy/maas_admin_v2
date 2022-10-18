@@ -7,8 +7,8 @@ module.exports = defineConfig({
         lessOptions: {
           // If you are using less-loader@5 please spread the lessOptions to options directly
           modifyVars: {
-            "primary-color": "#31b057",
-            "link-color": "#31b057",
+            "primary-color": "#51c273",
+            "link-color": "#51c273",
           },
           javascriptEnabled: true,
         },
