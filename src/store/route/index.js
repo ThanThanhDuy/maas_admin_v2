@@ -89,7 +89,22 @@ export default {
         return res;
       } catch (error) {
         console.log(
-          "🚀 ~ file: index.js ~ line 64 ~ createRouteFromListStation ~ error",
+          "🚀 ~ file: index.js ~ line 94 ~ createRouteFromListStation ~ error",
+          error
+        );
+      }
+    },
+    // eslint-disable-next-line
+    async updateRouteFromListStation({ commit }, data) {
+      try {
+        const res = await routeService.updateRouteFromListStation(
+          data.routeCode,
+          data.listStation
+        );
+        return res;
+      } catch (error) {
+        console.log(
+          "🚀 ~ file: index.js ~ line 105 ~ updateRouteFromListStation ~ error",
           error
         );
       }
@@ -110,7 +125,7 @@ export default {
       } catch (error) {
         commit("SET_LOADING", false);
         console.log(
-          "🚀 ~ file: index.js ~ line 43 ~ getAllRoute ~ error",
+          "🚀 ~ file: index.js ~ line 125 ~ getAllRoute ~ error",
           error
         );
       }

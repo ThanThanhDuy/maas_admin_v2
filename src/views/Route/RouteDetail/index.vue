@@ -49,11 +49,12 @@ export default {
     ...mapActions({
       getAllStation: "station/getAllStation",
       funcGetRouteByCode: "route/getRouteByCode",
+      updateRouteFromListStation: "route/updateRouteFromListStation",
     }),
     ...mapMutations({
       setListStationProps: "route/SET_LIST_STATION_PROPS",
     }),
-    async handleSave(listStation) {
+    async handleSave() {
       this.iconSave = "loading";
       // check empty data
       let checkEmptyData = true;
@@ -71,18 +72,33 @@ export default {
         return;
       }
       // eslint-disable-next-line
-      const data = listStation.map(item => item.Code);
+      const data = this.getListStationProps.map(item => item.Code);
+      const res = await this.updateRouteFromListStation({
+        routeCode: this.$route.params.code,
+        listStation: data,
+      });
+      if (res && res.StatusCode === 200) {
+        setTimeout(() => {
+          this.iconSave = "save";
+          notification(this, "success", "Update route successfully", "");
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          this.iconSave = "save";
+          notification(this, "error", "Update route failed", "");
+        }, 1000);
+      }
     },
     // eslint-disable-next-line
     handleChangeName(value, index) {
-      // let listStationTmp = [...this.getListStationProps];
-      // listStationTmp[index].Code = this.getStation.find(
-      //   station => station.Name === value
-      // ).Code;
-      // listStationTmp[index].Name = this.getStation.find(
-      //   station => station.Name === value
-      // ).Name;
-      // this.setListStationProps(listStationTmp);
+      let listStationTmp = [...this.getListStationProps];
+      listStationTmp[index].Code = this.getStation.find(
+        station => station.Name === value
+      ).Code;
+      listStationTmp[index].Name = this.getStation.find(
+        station => station.Name === value
+      ).Name;
+      this.setListStationProps(listStationTmp);
     },
     handleChangeCode(index) {
       let listStationTmp = [...this.getListStationProps];

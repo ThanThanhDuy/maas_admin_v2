@@ -18,6 +18,18 @@ class RouteService {
     }
     return response;
   }
+
+  async updateRouteFromListStation(routeCode, listStation) {
+    try {
+      var response = await routeApi.updateRouteFromListStation(
+        routeCode,
+        listStation
+      );
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
 }
 
 const routeService = new RouteService();
