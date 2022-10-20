@@ -14,6 +14,11 @@ class RouteApi {
     const url = `${this.PREFIX}`;
     return await axiosClient.post(url, { StationCodes });
   }
+
+  async updateRouteFromListStation(RouteCode, StationCodes) {
+    const url = `${this.PREFIX}`;
+    return await axiosClient.put(url, { RouteCode, StationCodes });
+  }
 }
 
 const routeApi = new RouteApi();
