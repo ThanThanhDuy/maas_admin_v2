@@ -62,21 +62,33 @@ export default {
         },
         {
           key: "2",
-          name: "Route",
+          name: "Routes",
           path: "/route",
           icon: "environment",
         },
         {
           key: "3",
-          name: "Station",
+          name: "Stations",
           path: "/station",
           icon: "table",
         },
         {
           key: "4",
-          name: "Driver",
+          name: "Drivers",
           path: "/driver",
           icon: "contacts",
+        },
+        {
+          key: "5",
+          name: "Help",
+          path: "/help",
+          icon: "alert",
+        },
+        {
+          key: "6",
+          name: "Messages",
+          path: "/messages",
+          icon: "message",
         },
       ],
     };

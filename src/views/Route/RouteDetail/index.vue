@@ -10,14 +10,32 @@
         :handleChangeName="handleChangeName"
         :handleChangeCode="handleChangeCode"
         :handleChangeValueAuto="handleChangeValueAuto"
+        :handleAddMore="handleAddMore"
+        :handlechangePosition="handlechangePosition"
+        :handleInsertAbove="handleInsertAbove"
+        :handleInsertBelow="handleInsertBelow"
+        :handleDeleteStation="handleDeleteStation"
       />
     </div>
     <div style="width: 50%">
       <GmapMap
-        :center="{ lat: 10.84057839865839, lng: 106.8099978721756 }"
-        :zoom="16"
+        ref="gmap"
+        :center="center"
+        :zoom="13"
         style="width: 100%; height: calc(100vh - 64px - 32px)"
-      ></GmapMap>
+        :options="{
+          zoomControl: true,
+        }"
+        :fitBounds="true"
+      >
+        <GmapMarker
+          :key="index"
+          v-for="(station, index) in getListStationProps"
+          :position="{ lat: station.Latitude, lng: station.Longitude }"
+          :fitBounds="true"
+          @click="center = { lat: station.Latitude, lng: station.Longitude }"
+        />
+      </GmapMap>
     </div>
   </div>
 </template>
@@ -27,11 +45,14 @@ import HeaderBack from "@/components/commons/HeaderBack";
 import { notification } from "@/utils/notification";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 import FromVue from "../AddRoute/Form";
+import { gmapApi } from "vue2-google-maps";
+
 export default {
   name: "AddRoute",
   data() {
     return {
       iconSave: "save",
+      center: { lat: 10.84057839865839, lng: 106.8099978721756 },
     };
   },
   components: {
@@ -44,6 +65,7 @@ export default {
       getRouteByCode: "route/getRouteByCode",
       getListStationProps: "route/getListStationProps",
     }),
+    google: gmapApi,
   },
   methods: {
     ...mapActions({
@@ -71,8 +93,15 @@ export default {
         }, 1000);
         return;
       }
-      // eslint-disable-next-line
       const data = this.getListStationProps.map(item => item.Code);
+      const checkDuplicate = new Set(data).size === data.length;
+      if (!checkDuplicate) {
+        setTimeout(() => {
+          this.iconSave = "save";
+          notification(this, "error", "Station already exists on route", "");
+        }, 1000);
+        return;
+      }
       const res = await this.updateRouteFromListStation({
         routeCode: this.$route.params.code,
         listStation: data,
@@ -122,6 +151,46 @@ export default {
       } else {
         listStationTmp[index].Code = "";
       }
+      this.setListStationProps(listStationTmp);
+    },
+    handleAddMore() {
+      let listStationTmp = [...this.getListStationProps];
+      listStationTmp.push({
+        Code: "",
+        Name: "",
+      });
+      this.setListStationProps(listStationTmp);
+      setTimeout(() => {
+        var objDiv = document.getElementsByClassName("containerFormRoute");
+        objDiv[0].scrollTop = objDiv[0].scrollHeight;
+      }, 0);
+    },
+    handlechangePosition(oldIndex, newIndex) {
+      let listStationTmp = [...this.getListStationProps];
+      const item = listStationTmp[oldIndex];
+      listStationTmp.splice(oldIndex, 1);
+      listStationTmp.splice(newIndex, 0, item);
+      this.setListStationProps(listStationTmp);
+    },
+    handleInsertAbove(index) {
+      let listStationTmp = [...this.getListStationProps];
+      listStationTmp.splice(index, 0, {
+        Code: "",
+        Name: "",
+      });
+      this.setListStationProps(listStationTmp);
+    },
+    handleInsertBelow(index) {
+      let listStationTmp = [...this.getListStationProps];
+      listStationTmp.splice(index + 1, 0, {
+        Code: "",
+        Name: "",
+      });
+      this.setListStationProps(listStationTmp);
+    },
+    handleDeleteStation(index) {
+      let listStationTmp = [...this.getListStationProps];
+      listStationTmp.splice(index, 1);
       this.setListStationProps(listStationTmp);
     },
   },

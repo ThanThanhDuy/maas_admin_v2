@@ -115,7 +115,7 @@ export default {
         const res = await routeService.getAllRoute();
         if (res && res.StatusCode === 200) {
           const route = res.Data.find(item => item.Code === code);
-          console.log(route);
+          // console.log(route);
           if (route) {
             commit("SET_LIST_STATION_PROPS", route.Stations);
             commit("SET_ROUTE_BY_CODE", route);

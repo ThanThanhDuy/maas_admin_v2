@@ -113,3 +113,55 @@ export const HEADER_DRIVER = [
     align: "left",
   },
 ];
+
+export const HEADER_PROBLEM = [
+  {
+    dataIndex: "CodeReport",
+    key: "CodeReport",
+    title: "Code Ticket",
+    width: "20%",
+    sorter: (a, b) => a.code - b.code,
+  },
+  {
+    title: "Title Ticket",
+    dataIndex: "TitleReport",
+    key: "TitleReport",
+    width: "20%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+  {
+    title: "User Code",
+    dataIndex: "UserCode",
+    key: "UserCode",
+    width: "20%",
+    sorter: (a, b) => a.code - b.code,
+  },
+  {
+    title: "Name",
+    key: "UserName",
+    dataIndex: "UserName",
+    width: "10%",
+  },
+  {
+    title: "Date",
+    key: "DateReport",
+    dataIndex: "DateReport",
+    width: "7%",
+  },
+  {
+    title: "Status",
+    key: "StatusReport",
+    dataIndex: "StatusReport",
+    scopedSlots: { customRender: "StatusReport" },
+    width: "5%",
+    align: "left",
+  },
+];
