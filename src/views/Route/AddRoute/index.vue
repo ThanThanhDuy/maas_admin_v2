@@ -10,6 +10,10 @@
         :handleChangeName="handleChangeName"
         :handleChangeCode="handleChangeCode"
         :handleAddMore="handleAddMore"
+        :handlechangePosition="handlechangePosition"
+        :handleInsertAbove="handleInsertAbove"
+        :handleInsertBelow="handleInsertBelow"
+        :handleDeleteStation="handleDeleteStation"
       />
     </div>
     <div style="width: 50%">
@@ -71,8 +75,15 @@ export default {
       }
       // add route
       const data = this.getListStationAdd.map(item => item.Code);
+      const checkDuplicate = new Set(data).size === data.length;
+      if (!checkDuplicate) {
+        setTimeout(() => {
+          this.iconSave = "save";
+          notification(this, "error", "Station already exists on route", "");
+        }, 1000);
+        return;
+      }
       const res = await this.createRouteFromListStation(data);
-      console.log(res.StatusCode);
       if (res && res.StatusCode === 200) {
         setTimeout(() => {
           this.iconSave = "save";
@@ -114,6 +125,38 @@ export default {
         Code: "",
         Name: "",
       });
+      this.setListStationAdd(listStationTmp);
+      setTimeout(() => {
+        var objDiv = document.getElementsByClassName("containerFormRoute");
+        objDiv[0].scrollTop = objDiv[0].scrollHeight;
+      }, 0);
+    },
+    handlechangePosition(oldIndex, newIndex) {
+      let listStationTmp = [...this.getListStationAdd];
+      const item = listStationTmp[oldIndex];
+      listStationTmp.splice(oldIndex, 1);
+      listStationTmp.splice(newIndex, 0, item);
+      this.setListStationAdd(listStationTmp);
+    },
+    handleInsertAbove(index) {
+      let listStationTmp = [...this.getListStationAdd];
+      listStationTmp.splice(index, 0, {
+        Code: "",
+        Name: "",
+      });
+      this.setListStationAdd(listStationTmp);
+    },
+    handleInsertBelow(index) {
+      let listStationTmp = [...this.getListStationAdd];
+      listStationTmp.splice(index + 1, 0, {
+        Code: "",
+        Name: "",
+      });
+      this.setListStationAdd(listStationTmp);
+    },
+    handleDeleteStation(index) {
+      let listStationTmp = [...this.getListStationAdd];
+      listStationTmp.splice(index, 1);
       this.setListStationAdd(listStationTmp);
     },
   },

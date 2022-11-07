@@ -55,21 +55,68 @@
         <div class="containerFormRoute__box__button">
           <a-popover
             placement="bottomRight"
-            :v-model="visible && indexSelected === index ? true : false"
             trigger="click"
+            :visible="visible && indexSelected === index ? true : false"
           >
             <template slot="content">
-              <p>Change position station</p>
-              <p>insert station above</p>
-              <p>insert station below</p>
-              <p>delete station</p>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+                  padding: 10px;
+                  border-radius: 5px;
+                  margin-bottom: 15px;
+                "
+              >
+                <span style="margin-right: 10px"
+                  >Change station to position</span
+                >
+                <a-input-number
+                  style="width: 60px; margin-right: 10px"
+                  v-model="position"
+                />
+                <a-button
+                  type="primary"
+                  icon="save"
+                  :disabled="position === index + 1 ? true : false"
+                  @click="() => handleChangePositionValue(index)"
+                />
+              </div>
+              <div
+                class="box_popover_route"
+                @click="() => handleInsertStationAbove(index)"
+              >
+                <span>Insert station above</span>
+                <a-button type="primary" icon="arrow-up" />
+              </div>
+              <div
+                class="box_popover_route"
+                @click="() => handleInsertStationBelow(index)"
+              >
+                <span>Insert station below</span>
+                <a-button type="primary" icon="arrow-down" />
+              </div>
+              <div
+                class="box_popover_route"
+                @click="() => handleDeleteStationRoute(index)"
+              >
+                <p>Delete station</p>
+                <a-button type="danger" icon="delete" />
+              </div>
             </template>
             <a-button
               @click="() => handleOpenMore(index)"
-              icon="more"
+              :icon="visible && indexSelected === index ? 'close' : 'more'"
               style="min-width: 24px"
             />
           </a-popover>
+          <!-- <a-popover v-model="visible" title="Title" trigger="click">
+            <a slot="content" @click="hide">Close</a>
+            <a-button type="primary" @click="visible = true">
+              Click me
+            </a-button>
+          </a-popover> -->
         </div>
       </div>
 
@@ -93,6 +140,8 @@
 
 <script>
 import ButtonVue from "@/components/commons/Button";
+import { notification } from "@/utils/notification";
+import { confirmDeleteDialog } from "@/utils/confirmDialog";
 
 export default {
   name: "FormVue",
@@ -132,6 +181,22 @@ export default {
       type: Function,
       default: () => {},
     },
+    handlechangePosition: {
+      type: Function,
+      default: () => {},
+    },
+    handleInsertAbove: {
+      type: Function,
+      default: () => {},
+    },
+    handleInsertBelow: {
+      type: Function,
+      default: () => {},
+    },
+    handleDeleteStation: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -147,6 +212,7 @@ export default {
       iconDelete: "delete",
       titleDelete: "Delete route",
       showDelete: false,
+      position: 0,
     };
   },
   methods: {
@@ -173,9 +239,11 @@ export default {
       this.handleAddMore();
     },
     handleOpenMore(index) {
-      this.visible = true;
+      this.visible = !this.visible;
       this.indexSelected = index;
+      this.position = index + 1;
     },
+
     handleChangeCodeStation(index) {
       this.handleChangeCode(index);
     },
@@ -184,6 +252,46 @@ export default {
     },
     handleChangeValue(value, index) {
       this.handleChangeValueAuto(value, index);
+    },
+    // eslint-disable-next-line
+    handleChangePositionValue(index) {
+      if (this.position > this.listStationProps.length || this.position < 1) {
+        notification(
+          this,
+          "warn",
+          `Position must be lager than 0 and smaller than ${this.listStationProps.length}`,
+          ""
+        );
+        return;
+      } else {
+        this.handlechangePosition(index, this.position - 1);
+        this.visible = false;
+      }
+    },
+    handleInsertStationAbove(index) {
+      this.handleInsertAbove(index);
+      this.visible = false;
+    },
+    handleInsertStationBelow(index) {
+      this.handleInsertBelow(index);
+      this.visible = false;
+    },
+    // eslint-disable-next-line
+    handleDeleteStationRoute(index) {
+      this.visible = false;
+      confirmDeleteDialog(
+        this,
+        "Are you sure delete this station?",
+        "",
+        () => {
+          this.handleDeleteStation(index);
+        },
+        () => {
+          this.visible = true;
+        }
+      );
+      // this.handleDeleteStation(index);
+      // this.visible = false;
     },
   },
   mounted() {
@@ -278,5 +386,17 @@ export default {
     align-items: center;
     margin-top: 10px;
   }
+}
+.box_popover_route {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

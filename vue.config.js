@@ -5,10 +5,11 @@ module.exports = defineConfig({
     loaderOptions: {
       less: {
         lessOptions: {
-          // If you are using less-loader@5 please spread the lessOptions to options directly
           modifyVars: {
             "primary-color": "#51c273",
             "link-color": "#51c273",
+            "btn-danger-bg": "#ed646a",
+            "btn-danger-border": "#ed646a",
           },
           javascriptEnabled: true,
         },

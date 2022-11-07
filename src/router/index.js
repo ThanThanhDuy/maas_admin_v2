@@ -9,6 +9,8 @@ import AddRoute from "@/views/Route/AddRoute";
 import Driver from "@/views/Driver";
 import DriverDetail from "@/views/Driver/DriverDetail";
 import RouteDetail from "@/views/Route/RouteDetail";
+import HelpCenter from "@/views/HelpCenter";
+import Message from "@/views/Message";
 
 Vue.use(VueRouter);
 
@@ -32,13 +34,13 @@ const routes = [
       },
       {
         path: "station",
-        name: "Station",
+        name: "Stations",
         component: Station,
         meta: { title: "ViGo - Station" },
       },
       {
         path: "route",
-        name: "Route",
+        name: "Routes",
         component: Route,
         meta: { title: "ViGo - Route" },
       },
@@ -50,7 +52,7 @@ const routes = [
       },
       {
         path: "driver",
-        name: "Driver",
+        name: "Drivers",
         component: Driver,
         meta: { title: "ViGo - Driver" },
       },
@@ -65,6 +67,18 @@ const routes = [
         name: "RouteDetail",
         component: RouteDetail,
         meta: { title: "ViGo - Route Detail" },
+      },
+      {
+        path: "help",
+        name: "Help",
+        component: HelpCenter,
+        meta: { title: "ViGo - Help Center" },
+      },
+      {
+        path: "messages",
+        name: "Messages",
+        component: Message,
+        meta: { title: "ViGo - Chat Support" },
       },
     ],
     redirect: "/dashboard",

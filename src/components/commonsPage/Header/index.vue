@@ -2,11 +2,13 @@
   <div class="containerHeader">
     <div class="containerHeader__left">
       <TitlePage :title="title" />
-      <SearchInput
-        v-if="isSearch"
-        :searchValue="searchValueHeader"
-        :placeholder="placeholder"
-      />
+      <div style="width: 400px">
+        <SearchInput
+          v-if="isSearch"
+          :searchValue="searchValueHeader"
+          :placeholder="placeholder"
+        />
+      </div>
     </div>
     <div v-if="iconHeader && titleButton">
       <ButtonVue
