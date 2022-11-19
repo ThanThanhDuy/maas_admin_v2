@@ -11,6 +11,10 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use(async config => {
+  const data = JSON.parse(localStorage.getItem("USER"));
+  if (data) {
+    config.headers.Authorization = `Bearer ${data?.AccessToken}`;
+  }
   return config;
 });
 

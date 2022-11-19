@@ -88,7 +88,7 @@ export default {
         setTimeout(() => {
           this.iconSave = "save";
           notification(this, "success", "Create route successfully", "");
-          this.$router.push({ name: "Route" });
+          this.$router.push({ name: "Routes" });
         }, 1000);
       } else {
         setTimeout(() => {

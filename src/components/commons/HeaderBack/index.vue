@@ -1,6 +1,6 @@
 <template>
   <div class="containerHeaderBack" @click="handleBack">
-    <a-icon type="arrow-left" class="iconBack" />
+    <a-icon type="left" class="iconBack" />
     <span>Back</span>
   </div>
 </template>

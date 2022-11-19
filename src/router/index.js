@@ -11,6 +11,9 @@ import DriverDetail from "@/views/Driver/DriverDetail";
 import RouteDetail from "@/views/Route/RouteDetail";
 import HelpCenter from "@/views/HelpCenter";
 import Message from "@/views/Message";
+import Banner from "@/views/Banner";
+import Promotion from "@/views/Promotion";
+import Setting from "@/views/Setting";
 
 Vue.use(VueRouter);
 
@@ -79,6 +82,24 @@ const routes = [
         name: "Messages",
         component: Message,
         meta: { title: "ViGo - Chat Support" },
+      },
+      {
+        path: "banner",
+        name: "Banners",
+        component: Banner,
+        meta: { title: "ViGo - Banner" },
+      },
+      {
+        path: "promotion",
+        name: "Promotions",
+        component: Promotion,
+        meta: { title: "ViGo - Promotion" },
+      },
+      {
+        path: "setting",
+        name: "Settings",
+        component: Setting,
+        meta: { title: "ViGo - Settings" },
       },
     ],
     redirect: "/dashboard",
