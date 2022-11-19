@@ -1,0 +1,17 @@
+{
+  "74": {
+    "name": "Bình Dương",
+    "slug": "binh-duong",
+    "type": "tinh",
+    "name_with_type": "Tỉnh Bình Dương",
+    "code": "74"
+  },
+
+  "79": {
+    "name": "Hồ Chí Minh",
+    "slug": "ho-chi-minh",
+    "type": "thanh-pho",
+    "name_with_type": "Thành phố Hồ Chí Minh",
+    "code": "79"
+  }
+}
