@@ -82,13 +82,31 @@ export default {
           key: "5",
           name: "Help",
           path: "/help",
-          icon: "alert",
+          icon: "customer-service",
         },
         {
           key: "6",
           name: "Messages",
           path: "/messages",
           icon: "message",
+        },
+        {
+          key: "7",
+          name: "Banners",
+          path: "/banner",
+          icon: "camera",
+        },
+        {
+          key: "8",
+          name: "Promotions",
+          path: "/promotion",
+          icon: "gift",
+        },
+        {
+          key: "9",
+          name: "Settings",
+          path: "/setting",
+          icon: "setting",
         },
       ],
     };

@@ -116,17 +116,17 @@ export const HEADER_DRIVER = [
 
 export const HEADER_PROBLEM = [
   {
-    dataIndex: "CodeReport",
-    key: "CodeReport",
-    title: "Code Ticket",
+    dataIndex: "Code",
+    key: "Code",
+    title: "Code Report",
     width: "20%",
     sorter: (a, b) => a.code - b.code,
   },
   {
-    title: "Title Ticket",
-    dataIndex: "TitleReport",
-    key: "TitleReport",
-    width: "20%",
+    title: "Title",
+    dataIndex: "Title",
+    key: "Title",
+    width: "15%",
     sorter: (a, b) => {
       if (a.from < b.from) {
         return -1;
@@ -145,7 +145,7 @@ export const HEADER_PROBLEM = [
     sorter: (a, b) => a.code - b.code,
   },
   {
-    title: "Name",
+    title: "User Name",
     key: "UserName",
     dataIndex: "UserName",
     width: "10%",
@@ -154,14 +154,66 @@ export const HEADER_PROBLEM = [
     title: "Date",
     key: "DateReport",
     dataIndex: "DateReport",
-    width: "7%",
+    width: "10%",
   },
   {
     title: "Status",
     key: "StatusReport",
     dataIndex: "StatusReport",
     scopedSlots: { customRender: "StatusReport" },
-    width: "5%",
+    width: "10%",
     align: "left",
+  },
+];
+
+export const HEADER_STATION = [
+  {
+    dataIndex: "Code",
+    key: "Code",
+    title: "Code",
+    width: "20%",
+    sorter: (a, b) => a.code - b.code,
+  },
+  {
+    title: "Name",
+    dataIndex: "Name",
+    key: "Name",
+    width: "15%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+  {
+    title: "Address",
+    key: "Address",
+    dataIndex: "Address",
+    width: "25%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+  {
+    title: "Latitude",
+    key: "Latitude",
+    dataIndex: "Latitude",
+    width: "10%",
+  },
+  {
+    title: "Longitude",
+    key: "Longitude",
+    dataIndex: "Longitude",
+    width: "10%",
   },
 ];

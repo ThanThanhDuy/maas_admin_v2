@@ -6,6 +6,7 @@ import station from "./station";
 import driver from "./driver";
 import report from "./report";
 import message from "./message";
+import banner from "./banner";
 
 Vue.use(Vuex);
 
@@ -31,5 +32,5 @@ export default new Vuex.Store({
     },
   },
   actions: {},
-  modules: { auth, route, station, driver, report, message },
+  modules: { auth, route, station, driver, report, message, banner },
 });
