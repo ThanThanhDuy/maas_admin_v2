@@ -14,6 +14,7 @@ import Message from "@/views/Message";
 import Banner from "@/views/Banner";
 import Promotion from "@/views/Promotion";
 import Setting from "@/views/Setting";
+import ReportDetail from "@/views/HelpCenter/ReportDetail";
 
 Vue.use(VueRouter);
 
@@ -100,6 +101,12 @@ const routes = [
         name: "Settings",
         component: Setting,
         meta: { title: "ViGo - Settings" },
+      },
+      {
+        path: "report/:code",
+        name: "ReportDetail",
+        component: ReportDetail,
+        meta: { title: "ViGo - Report Detail" },
       },
     ],
     redirect: "/dashboard",

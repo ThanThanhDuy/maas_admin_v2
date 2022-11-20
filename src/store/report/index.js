@@ -1,73 +1,41 @@
+import reportService from "@/services/report";
 import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
-
-const getReports = tab =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      if (tab === 1) {
-        resolve([
-          {
-            CodeReport: "123e4567-e89b-12d3-a456-426614174000",
-            TitleReport: "The customer doesn't arrive at the pick-up point",
-            UserCode: "124e4567-e89b-12d3-a456-426614174000",
-            UserName: "Quách Đại Lợi",
-            DateReport: "07-11-2022",
-            StatusReport: 0,
-          },
-          {
-            CodeReport: "124e4567-e89b-12d3-a456-426614174000",
-            TitleReport: "Unable to contact customer",
-            UserCode: "124e4567-e89b-12d3-a456-426614174000",
-            UserName: "Thân Thanh Duy",
-            DateReport: "07-11-2022",
-            StatusReport: 0,
-          },
-          {
-            CodeReport: "124e4567-e89b-12d3-a456-426614174000",
-            TitleReport: "The driver's vehicle has a problem",
-            UserCode: "124e4567-e89b-12d3-a456-426614174000",
-            UserName: "Huỳnh Anh Vũ",
-            DateReport: "07-11-2022",
-            StatusReport: 0,
-          },
-        ]);
-      } else if (tab === 2) {
-        resolve([
-          {
-            CodeReport: "123e4567-e89b-12d3-a456-426614174000",
-            TitleReport: "The driver doesn't come to the pick-up point",
-            UserCode: "124e4567-e89b-12d3-a456-426614174000",
-            UserName: "Nguyễn Đăng Khoa",
-            DateReport: "07-11-2022",
-            StatusReport: 0,
-          },
-          {
-            CodeReport: "124e4567-e89b-12d3-a456-426614174000",
-            TitleReport: "Unable to contact the driver",
-            UserCode: "124e4567-e89b-12d3-a456-426614174000",
-            UserName: "Đỗ Trọng Đạt",
-            DateReport: "07-11-2022",
-            StatusReport: 0,
-          },
-        ]);
-      }
-    }, 1500);
-  });
 
 export default {
   namespaced: true,
   state: {
     report: [],
     isLoading: false,
+    dataReport: {},
+    isLoadingDataReport: false,
   },
   getters: {
     getterReport(state) {
       return state.report;
     },
+    getterReportHandle(state) {
+      const result = state.report?.Data?.Items.map(item => {
+        return {
+          ...item,
+          UserName: item.User.Name,
+          UserCode: item.User.Code,
+          UserPhone: item.User.PhoneNumber,
+          StatusReport: item.Status,
+        };
+      });
+      return result;
+    },
     getLoading(state) {
       return state.isLoading;
+    },
+    getterDataReport(state) {
+      return state.dataReport;
+    },
+    getLoadingDataReport(state) {
+      return state.isLoadingDataReport;
     },
   },
   mutations: {
@@ -77,13 +45,24 @@ export default {
     SET_LOADING(state, isLoading) {
       state.isLoading = isLoading;
     },
+    SET_DATA_REPORT(state, dataReport) {
+      state.dataReport = dataReport;
+    },
+    SET_LOADING_DATA_REPORT(state, isLoadingDataReport) {
+      state.isLoadingDataReport = isLoadingDataReport;
+    },
   },
   actions: {
-    async getReport({ commit }, tab) {
+    async getReport({ commit }, params) {
       commit("SET_LOADING", true);
       try {
-        const res = await getReports(tab);
-        if (res) {
+        const res = await reportService.getReport(
+          params.page,
+          params.pageSize,
+          params.status
+        );
+        console.log(res);
+        if (res && res.StatusCode === 200) {
           commit("SET_REPORT", res);
           commit("SET_LOADING", false);
         }
@@ -91,6 +70,21 @@ export default {
         console.log(error);
         commit("SET_LOADING", false);
       }
+    },
+    async getDataReport({ commit }, code) {
+      commit("SET_LOADING_DATA_REPORT", true);
+      try {
+        const res = await reportService.getDataReport(code);
+        if (res && res.StatusCode === 200) {
+          commit("SET_DATA_REPORT", res);
+          commit("SET_LOADING_DATA_REPORT", false);
+          return res;
+        }
+      } catch (error) {
+        console.log(error);
+        commit("SET_LOADING_DATA_REPORT", false);
+      }
+      return null;
     },
   },
 };

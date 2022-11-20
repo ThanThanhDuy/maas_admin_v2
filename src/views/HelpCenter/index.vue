@@ -2,24 +2,25 @@
   <div>
     <HeaderPage
       :title="title"
-      :isSearch="isSearch"
       :titleButton="titleButton"
       :iconHeader="iconHeader"
+      :placeholder="placeholder"
     />
     <div class="conatinerTab">
-      <a-tabs default-active-key="1" @change="callback">
-        <a-tab-pane key="1" tab="Driver Support Ticket">
+      <a-tabs default-active-key="2" @change="callback">
+        <!-- <a-tab-pane key="1" tab="Driver Support Ticket">
           <TableVue
             :header="HEADER_PROBLEM"
             :data="getterReport"
             :isLoading="getLoading"
           />
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="User Support Ticket">
+        </a-tab-pane> -->
+        <a-tab-pane key="2" tab="Report">
           <TableVue
             :header="HEADER_PROBLEM"
-            :data="getterReport"
+            :data="getReportHandle"
             :isLoading="getLoading"
+            :rowSelect="rowSelect"
           />
         </a-tab-pane>
       </a-tabs>
@@ -42,15 +43,16 @@ export default {
   computed: {
     ...mapGetters({
       getterReport: "report/getterReport",
+      getReportHandle: "report/getterReportHandle",
       getLoading: "report/getLoading",
     }),
   },
   data() {
     return {
       title: "Help Center",
-      isSearch: false,
       titleButton: "",
       iconHeader: "",
+      placeholder: "Search report by name user",
       HEADER_PROBLEM,
     };
   },
@@ -65,10 +67,20 @@ export default {
       this.setDriver([]);
       this.getReport(Number(key));
     },
+    rowSelect(record) {
+      this.$router.push({
+        name: "ReportDetail",
+        params: { code: record.Code },
+      });
+    },
   },
   mounted() {
     this.setDriver([]);
-    this.getReport(1);
+    this.getReport({
+      page: 1,
+      pageSize: 2,
+      status: null,
+    });
   },
 };
 </script>

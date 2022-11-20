@@ -5,6 +5,7 @@
     :loading="isLoading"
     :customRow="rowSelected"
     :rowKey="record => (record?.Code ? record?.Code : record?.code)"
+    :pagination="{ defaultPageSize: pageSize }"
   >
     <template slot="status" slot-scope="status">
       <span>
@@ -20,6 +21,13 @@
         }}</a-tag>
       </span>
     </template>
+    <template slot="StatusReport" slot-scope="StatusReport">
+      <span>
+        <a-tag :color="STATUS_REPORT[StatusReport].color">{{
+          STATUS_REPORT[StatusReport].status
+        }}</a-tag>
+      </span>
+    </template>
     <template slot="distance" slot-scope="distance">
       <span>{{ caculateDistance(distance) }}</span>
     </template>
@@ -28,13 +36,14 @@
 
 <script>
 import { caculateDistance } from "@/utils/caculateDistance";
-import { STATUS_DRIVER } from "@/constants/status";
+import { STATUS_DRIVER, STATUS_REPORT } from "@/constants/status";
 
 export default {
   name: "TableVue",
   data() {
     return {
       STATUS_DRIVER,
+      STATUS_REPORT,
     };
   },
   props: {
@@ -53,6 +62,10 @@ export default {
     rowSelect: {
       type: Function,
       default: () => {},
+    },
+    pageSize: {
+      type: Number,
+      default: 10,
     },
   },
   methods: {

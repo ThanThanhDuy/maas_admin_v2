@@ -12,3 +12,71 @@ export const STATUS_DRIVER = {
     status: "Pendding",
   },
 };
+
+export const STATUS_REPORT = {
+  1: {
+    color: "orange",
+    status: "Pendding",
+  },
+  2: {
+    color: "green",
+    status: "Processed",
+  },
+  3: {
+    color: "red",
+    status: "Processing Denied",
+  },
+  Pendding: 1,
+  Processed: 2,
+  ProcessingDenied: 3,
+};
+
+export const STATUS_BOOKING_DETAIL = {
+  1: {
+    status: "Finding driver",
+    color: "orange",
+  },
+  2: {
+    status: "Ready",
+    color: "cyan",
+  },
+  3: {
+    status: "Started",
+    color: "blue",
+  },
+  4: {
+    status: "Completed",
+    color: "green",
+  },
+  5: {
+    status: "Pending Refund",
+    color: "orange",
+  },
+  6: {
+    status: "Completed Refund",
+    color: "green",
+  },
+};
+
+export const STATUS_BOOKING_DETAIL_DRIVER = {
+  "-1": {
+    color: "red",
+    status: "Cancelled",
+  },
+  0: {
+    color: "orange",
+    status: "Not Yet",
+  },
+  1: {
+    color: "cyan",
+    status: "Started",
+  },
+  2: {
+    color: "blue",
+    status: "Picked Up",
+  },
+  3: {
+    color: "green",
+    status: "Completed",
+  },
+};
