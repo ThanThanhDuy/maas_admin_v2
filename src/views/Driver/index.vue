@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       title: "Driver",
-      placeholder: "Search Driver",
+      placeholder: "Search Driver by phone",
       titleButton: "",
       iconHeader: "",
       HEADER_DRIVER,
