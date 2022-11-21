@@ -7,6 +7,8 @@ import driver from "./driver";
 import report from "./report";
 import message from "./message";
 import banner from "./banner";
+import setting from "./setting";
+import dashboard from "./dashboard";
 
 Vue.use(Vuex);
 
@@ -32,5 +34,15 @@ export default new Vuex.Store({
     },
   },
   actions: {},
-  modules: { auth, route, station, driver, report, message, banner },
+  modules: {
+    auth,
+    route,
+    station,
+    driver,
+    report,
+    message,
+    banner,
+    setting,
+    dashboard,
+  },
 });
