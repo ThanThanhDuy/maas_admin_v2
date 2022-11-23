@@ -17,6 +17,7 @@ export default {
         Name: "",
       },
     ],
+    pagination: {},
   },
   getters: {
     getRoute(state) {
@@ -46,6 +47,9 @@ export default {
     getListStationAdd(state) {
       return state.listStationAdd;
     },
+    getPagination(state) {
+      return state.pagination;
+    },
   },
   mutations: {
     SET_ROUTE(state, route) {
@@ -62,6 +66,9 @@ export default {
     },
     SET_LIST_STATION_ADD(state, listStationAdd) {
       state.listStationAdd = listStationAdd;
+    },
+    SET_PAGINATION(state, pagination) {
+      state.pagination = pagination;
     },
   },
   actions: {
@@ -126,6 +133,36 @@ export default {
         commit("SET_LOADING", false);
         console.log(
           "🚀 ~ file: index.js ~ line 125 ~ getAllRoute ~ error",
+          error
+        );
+      }
+    },
+    async getRoutePaging({ commit }, params) {
+      commit("SET_LOADING", true);
+      try {
+        const res = await routeService.getRoutePaging(
+          params.search,
+          params.page,
+          params.pageSize
+        );
+        console.log("hi", res);
+        if (res && res.StatusCode === 200) {
+          commit("SET_ROUTE", res.Data?.Items);
+          commit("SET_PAGINATION", {
+            total: res.Data.TotalItemsCount,
+            current: res.Data.Page,
+            pageSize: res.Data.PageSize,
+          });
+          commit("SET_LOADING", false);
+          return res;
+        } else {
+          commit("SET_LOADING", false);
+          return res;
+        }
+      } catch (error) {
+        commit("SET_LOADING", false);
+        console.log(
+          "🚀 ~ file: index.js ~ line 153 ~ getRoutePaging ~ error",
           error
         );
       }

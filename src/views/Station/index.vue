@@ -13,8 +13,9 @@
         :header="HEADER_STATION"
         :data="getStation"
         :isLoading="getLoading"
-        :pageSize="9"
         :rowSelect="rowSelect"
+        :pagination="getPagination"
+        :handleTableChange="handleTableChange"
       />
     </div>
     <a-modal
@@ -285,20 +286,37 @@ export default {
       HEADER_STATION,
       recordSelected: {},
       isCreate: false,
+      pageSize: 8,
+      currentPage: 1,
+      total: 0,
+      pagi: {},
+      valueSearch: "",
     };
   },
   computed: {
     ...mapGetters({
       getStation: "station/listStation",
       getLoading: "station/getLoading",
+      getPagination: "station/getPagination",
     }),
   },
   methods: {
     ...mapActions({
-      getAllStation: "station/getAllStation",
+      getStationPaging: "station/getStationPaging",
     }),
-    searchValue(value) {
-      console.log("Route", value);
+    async searchValue(value) {
+      this.valueSearch = value;
+      const res = await this.getStationPaging({
+        search: value,
+        page: 1,
+        pageSize: 8,
+        loading: true,
+      });
+      this.pagi = {
+        total: res.Data.TotalItemsCount,
+        current: res.Data.Page,
+        pageSize: res.Data.PageSize,
+      };
     },
     onClickButton() {
       this.isCreate = true;
@@ -468,7 +486,13 @@ export default {
                 this.resetField();
                 this.visible = false;
                 this.isCreate = false;
-                this.getAllStation();
+                // this.getAllStation();
+                this.getStationPaging({
+                  search: this.valueSearch,
+                  page: this.pagi.current,
+                  pageSize: this.pagi.pageSize,
+                  loading: true,
+                });
               }
             },
             onCancel() {},
@@ -658,16 +682,41 @@ export default {
               this.resetField();
               this.visible = false;
               this.isCreate = false;
-              this.getAllStation();
+              // this.getAllStation();
+              this.getStationPaging({
+                search: this.valueSearch,
+                page: this.pagi.current,
+                pageSize: this.pagi.pageSize,
+                loading: true,
+              });
             }
           }
         },
         onCancel() {},
       });
     },
+    handleTableChange(pagination) {
+      this.pagi = pagination;
+      this.getStationPaging({
+        search: this.valueSearch,
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+        loading: true,
+      });
+    },
   },
-  mounted() {
-    this.getAllStation();
+  async mounted() {
+    const res = await this.getStationPaging({
+      search: this.valueSearch,
+      page: 1,
+      pageSize: 8,
+      loading: true,
+    });
+    this.pagi = {
+      total: res.Data.TotalItemsCount,
+      current: res.Data.Page,
+      pageSize: res.Data.PageSize,
+    };
     const readProvince = require("@/hanhchinhvn/tinh_tp.json");
     const province = Object.entries(readProvince).map(item => item[1]);
     this.provinces = province.sort((a, b) =>

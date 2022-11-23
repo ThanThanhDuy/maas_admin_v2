@@ -32,7 +32,9 @@
                   :delay="delay"
                   :endVal="getTotalBooking"
                 />
-                <span style="margin-left: 5px">Trip</span>
+                <span style="margin-left: 5px">{{
+                  getTotalBooking > 1 ? "Trips" : "Trip"
+                }}</span>
               </div>
               <div class="recData__totalbooking__line"></div>
             </div>
@@ -48,7 +50,9 @@
                   :delay="delay"
                   :endVal="getTotalBookingCompleted"
                 />
-                <span style="margin-left: 5px">Trip</span>
+                <span style="margin-left: 5px">{{
+                  getTotalBookingCompleted > 1 ? "Trips" : "Trip"
+                }}</span>
               </div>
               <div class="recData__totalbookingcompleted__line"></div>
             </div>
@@ -64,7 +68,9 @@
                   :delay="delay"
                   :endVal="getTotalBookingCancelled"
                 />
-                <span style="margin-left: 5px">Trip</span>
+                <span style="margin-left: 5px">{{
+                  getTotalBookingCancelled > 1 ? "Trips" : "Trip"
+                }}</span>
               </div>
               <div class="recData__totalbookingcancelled__line"></div>
             </div>
@@ -414,7 +420,11 @@ export default {
           break;
         case 3:
           result = this.dataMonthSelected?.Finance?.TotalPayForDriver;
-          result = `${result ? result : 0} ${result > 1 ? "Trips" : "Trip"}`;
+          result = result ? result : 0;
+          result = result.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          });
           break;
         case 4:
           result = this.dataMonthSelected?.BookingDetailInfo?.Total;

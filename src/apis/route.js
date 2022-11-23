@@ -10,6 +10,11 @@ class RouteApi {
     return await axiosClient.get(url);
   }
 
+  async getRoutePaging(params) {
+    const url = "admins/routes";
+    return await axiosClient.get(url, { params });
+  }
+
   async createRouteFromListStation(StationCodes) {
     const url = `${this.PREFIX}`;
     return await axiosClient.post(url, { StationCodes });

@@ -14,6 +14,8 @@
         :data="getRoute"
         :isLoading="getLoading"
         :rowSelect="rowSelect"
+        :pagination="getPagination"
+        :handleTableChange="handleTableChange"
       />
     </div>
   </div>
@@ -38,23 +40,39 @@ export default {
       titleButton: "Create route",
       HEADER_ROUTE,
       iconHeader: "plus",
+      pageSize: 10,
+      total: 0,
+      pagi: {},
+      valueSearch: "",
     };
   },
   computed: {
     ...mapGetters({
       getRoute: "route/getRoute",
       getLoading: "route/getLoading",
+      getPagination: "route/getPagination",
     }),
   },
   methods: {
     ...mapActions({
       getAllRoute: "route/getAllRoute",
+      getRoutePaging: "route/getRoutePaging",
     }),
     ...mapMutations({
       SET_ROUTE: "route/SET_ROUTE",
     }),
-    searchValue(value) {
-      console.log("Route", value);
+    async searchValue(value) {
+      this.valueSearch = value;
+      const res = await this.getRoutePaging({
+        search: value,
+        page: 1,
+        pageSize: this.pageSize,
+      });
+      this.pagi = {
+        total: res.Data.TotalItemsCount,
+        current: res.Data.Page,
+        pageSize: res.Data.PageSize,
+      };
     },
     onClickButton() {
       this.$router.push({ name: "AddRoute" });
@@ -65,10 +83,28 @@ export default {
         params: { code: record.code },
       });
     },
+    handleTableChange(pagination) {
+      this.pagi = pagination;
+      this.getRoutePaging({
+        search: this.valueSearch,
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+      });
+    },
   },
-  mounted() {
+  async mounted() {
     this.SET_ROUTE([]);
-    this.getAllRoute();
+    // this.getAllRoute();
+    const res = await this.getRoutePaging({
+      search: this.valueSearch,
+      page: 1,
+      pageSize: this.pageSize,
+    });
+    this.pagi = {
+      total: res.Data.TotalItemsCount,
+      current: res.Data.Page,
+      pageSize: res.Data.PageSize,
+    };
   },
 };
 </script>

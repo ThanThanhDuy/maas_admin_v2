@@ -10,6 +10,11 @@ class StationApi {
     return await axiosClient.get(url);
   }
 
+  async getStationPaging(params) {
+    const url = `admins/${this.PREFIX}`;
+    return await axiosClient.get(url, { params });
+  }
+
   async createStation(params) {
     const url = `${this.PREFIX}`;
     return await axiosClient.post(url, params);

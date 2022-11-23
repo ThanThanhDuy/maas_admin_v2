@@ -10,6 +10,28 @@ class StationService {
     return response;
   }
 
+  async getStationPaging(search, page, pageSize) {
+    let params = {};
+    if (search) {
+      params = {
+        SearchValue: search,
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    } else {
+      params = {
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    }
+    try {
+      var response = await stationApi.getStationPaging(params);
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
+
   async createStation(params) {
     try {
       var response = await stationApi.createStation([params]);

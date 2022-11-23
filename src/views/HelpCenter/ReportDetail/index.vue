@@ -57,7 +57,7 @@
             </a-tag>
           </a-col>
         </a-row>
-        <a-row style="margin-bottom: 15px">
+        <a-row style="margin-bottom: 15px" v-if="reportInfo?.Status !== 1">
           <a-col :span="8">
             <span class="labelDetail">Process by Admin</span>
           </a-col>
@@ -146,23 +146,23 @@
         </a-row>
         <a-divider />
         <p
-          v-if="driver"
+          v-if="!driver"
           style="font-size: 20px; font-weight: 500; margin-bottom: 25px"
         >
           Booking Detail Driver
         </p>
         <a-row
-          v-if="driver"
+          v-if="!driver"
           style="margin-bottom: 15px; display: flex; align-items: center"
         >
           <a-col :span="8">
             <span class="labelDetail">Code</span>
           </a-col>
           <a-col :span="16">
-            <span>{{ report?.Driver?.TripStatus }}</span>
+            <span>{{ report?.Driver?.BookingDetailDriverCode }}</span>
           </a-col>
         </a-row>
-        <a-row v-if="driver" style="margin-bottom: 15px">
+        <a-row v-if="!driver" style="margin-bottom: 15px">
           <a-col :span="8">
             <span class="labelDetail">Status</span>
           </a-col>

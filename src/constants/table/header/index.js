@@ -88,30 +88,30 @@ export const HEADER_DRIVER = [
   },
   {
     title: "Phone",
-    dataIndex: "Phone",
-    key: "Phone",
+    dataIndex: "PhoneNumber",
+    key: "PhoneNumber",
     width: "10%",
   },
-  {
-    title: "Email",
-    key: "Email",
-    dataIndex: "Email",
-    width: "20%",
-  },
-  {
-    title: "Birthdate",
-    key: "Birthdate",
-    dataIndex: "Birthdate",
-    width: "10%",
-  },
-  {
-    title: "Status",
-    key: "StatusDriver",
-    dataIndex: "StatusDriver",
-    scopedSlots: { customRender: "StatusDriver" },
-    width: "10%",
-    align: "left",
-  },
+  // {
+  //   title: "Email",
+  //   key: "Email",
+  //   dataIndex: "Email",
+  //   width: "20%",
+  // },
+  // {
+  //   title: "Birthdate",
+  //   key: "Birthdate",
+  //   dataIndex: "Birthdate",
+  //   width: "10%",
+  // },
+  // {
+  //   title: "Status",
+  //   key: "StatusDriver",
+  //   dataIndex: "StatusDriver",
+  //   scopedSlots: { customRender: "StatusDriver" },
+  //   width: "10%",
+  //   align: "left",
+  // },
 ];
 
 export const HEADER_PROBLEM = [
@@ -214,6 +214,88 @@ export const HEADER_STATION = [
     title: "Longitude",
     key: "Longitude",
     dataIndex: "Longitude",
+    width: "10%",
+  },
+];
+
+export const HEADER_BANNER = [
+  {
+    dataIndex: "Priority",
+    key: "Priority",
+    title: "Priority",
+    width: "5%",
+    sorter: (a, b) => a.code - b.code,
+  },
+  {
+    title: "Title",
+    dataIndex: "Title",
+    key: "Title",
+    width: "20%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+  {
+    title: "Content",
+    key: "Content",
+    dataIndex: "Content",
+    scopedSlots: { customRender: "Content" },
+    width: "35%",
+    sorter: (a, b) => {
+      if (a.from < b.from) {
+        return -1;
+      }
+      if (a.from > b.from) {
+        return 1;
+      }
+      return 0;
+    },
+  },
+];
+
+export const HEADER_PROMOTION = [
+  {
+    dataIndex: "Code",
+    key: "Code",
+    title: "Code",
+    width: "10%",
+  },
+  {
+    title: "Name",
+    dataIndex: "Name",
+    key: "Name",
+    width: "20%",
+  },
+  {
+    title: "Discount Percentage",
+    key: "DiscountPercentage",
+    dataIndex: "DiscountPercentage",
+    width: "10%",
+  },
+  {
+    title: "Max Decrease",
+    key: "MaxDecrease",
+    dataIndex: "MaxDecrease",
+    width: "10%",
+  },
+  {
+    title: "Type",
+    key: "Type",
+    dataIndex: "Type",
+    scopedSlots: { customRender: "Type" },
+    width: "10%",
+  },
+  {
+    title: "Status",
+    key: "StatusPromotion",
+    dataIndex: "StatusPromotion",
+    scopedSlots: { customRender: "StatusPromotion" },
     width: "10%",
   },
 ];

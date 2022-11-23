@@ -7,6 +7,7 @@
       justifyContent: 'flex-end',
       alignItems: 'center',
       paddingRight: '20px',
+      borderBottom: '1px solid #e8e8e8',
     }"
   >
     <a-popover placement="bottomRight">

@@ -7,9 +7,10 @@
       :isSearch="isSearch"
     />
     <div class="conatinerTab">
-      <a-tabs default-active-key="1">
+      <!-- <a-form :form="form" @submit="handleSubmit"> -->
+      <a-tabs :activeKey="tab" @change="callback">
         <a-tab-pane key="1" tab="Profile & Wallet">
-          <div class="containerSubTab">
+          <div class="containerSubTab" v-if="!getLoadingDetail">
             <TitleUser
               title="Driver Profile"
               subtitle="Update driver's profile"
@@ -30,12 +31,12 @@
                     @change="handlePreview"
                   >
                     <img
-                      v-if="user.AvartarUrl"
-                      :src="user.AvartarUrl"
+                      v-if="user?.AvatarUrl"
+                      :src="user?.AvatarUrl"
                       alt="avatar"
                     />
                     <div v-else>
-                      <a-icon :type="loading ? 'loading' : 'plus'" />
+                      <!-- <a-icon :type="loading ? 'loading' : 'plus'" /> -->
                       <div class="ant-upload-text">Upload</div>
                     </div>
                   </a-upload>
@@ -57,12 +58,25 @@
               <div class="wapperContent__left">
                 <p class="left__title">Basic Information</p>
               </div>
-              <ProfileVue :user="user" :handleChangeValue="handleChangeValue" />
+              <ProfileVue
+                ref="profile"
+                :user="user"
+                :handleChangeValue="handleChangeValue"
+                :handleUpdateUser="handleUpdateUser"
+                :handleChangeValueVehicle="handleChangeValueVehicle"
+              />
             </div>
 
-            <a-divider />
-            <TitleUser title="Wallet" subtitle="Driver's wallet is here!" />
-            <div class="wapperContent">
+            <a-divider v-if="user?.Status === 0 || user?.Status === 1" />
+            <TitleUser
+              title="Wallet"
+              subtitle="Driver's wallet is here!"
+              v-if="user?.Status === 0 || user?.Status === 1"
+            />
+            <div
+              class="wapperContent"
+              v-if="user?.Status === 0 || user?.Status === 1"
+            >
               <div class="wapperContent__left">
                 <p class="left__title">Balance & Linking</p>
               </div>
@@ -99,26 +113,74 @@
             </div>
             <a-divider />
           </div>
+          <div
+            v-else
+            style="
+              display: flex;
+              justify-content: center;
+              width: 100%;
+              margin-top: 20px;
+            "
+          >
+            <a-spin />
+          </div>
         </a-tab-pane>
         <a-tab-pane key="2" tab="Lisence">
           <div class="containerSubTab">
             <LicenseVue
-              v-for="license in user.License"
-              :key="license.LicenseCode"
-              :title="license.LicenseName"
-              :licenseImageFacade="license.LicenseImageFacade"
-              :licenseImageBackside="license.LicenseImageBackside"
-              :licenseCode="license.LicenseCode"
-              :licenseId="license.LicenseId"
+              :title="user.Identification?.LicenseType"
+              :licenseImageFacade="user.Identification?.FrontSideImage"
+              :licenseImageBackside="user.Identification?.BackSideImage"
+              :licenseCode="user.Identification?.Code"
+              :licenseId="licIden"
               :handlePreviewImageLicense="handlePreviewImageLicense"
-              :handleSaveLicense="handleSaveLicense"
               :handlePrepareFileToUploadLicense="
                 handlePrepareFileToUploadLicense
               "
+              :handleChangeValueLicense="handleChangeValueLicense"
+              :handleUpdateUser="handleUpdateUser"
+              :ref="licIden"
+            />
+            <LicenseVue
+              :title="user.DriverLicense?.LicenseType"
+              :licenseImageFacade="user.DriverLicense?.FrontSideImage"
+              :licenseImageBackside="user.DriverLicense?.BackSideImage"
+              :licenseCode="user.DriverLicense?.Code"
+              :licenseId="licDir"
+              :handlePreviewImageLicense="handlePreviewImageLicense"
+              :handlePrepareFileToUploadLicense="
+                handlePrepareFileToUploadLicense
+              "
+              :handleChangeValueLicense="handleChangeValueLicense"
+              :handleUpdateUser="handleUpdateUser"
+              :ref="licDir"
+            />
+            <LicenseVue
+              :title="user.VehicleRegistration?.LicenseType"
+              :licenseImageFacade="user.VehicleRegistration?.FrontSideImage"
+              :licenseImageBackside="user.VehicleRegistration?.BackSideImage"
+              :licenseCode="user.VehicleRegistration?.Code"
+              :licenseId="licVeh"
+              :handlePreviewImageLicense="handlePreviewImageLicense"
+              :handlePrepareFileToUploadLicense="
+                handlePrepareFileToUploadLicense
+              "
+              :handleChangeValueLicense="handleChangeValueLicense"
+              :handleUpdateUser="handleUpdateUser"
+              :ref="licVeh"
             />
           </div>
         </a-tab-pane>
+        <a-button
+          slot="tabBarExtraContent"
+          type="primary"
+          icon="save"
+          @click="handleUpdateDriver"
+        >
+          Save
+        </a-button>
       </a-tabs>
+      <!-- </a-form> -->
     </div>
   </div>
 </template>
@@ -128,6 +190,9 @@ import HeaderPage from "@/components/commonsPage/Header";
 import TitleUser from "@/components/commons/TitleUser";
 import LicenseVue from "@/components/commons/License";
 import ProfileVue from "@/components/commons/Profile";
+import { mapActions, mapGetters } from "vuex";
+import { REGEX } from "@/constants/regex";
+import { notification } from "@/utils/notification";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -152,102 +217,178 @@ export default {
       iconHeader: "",
       previewVisible: false,
       previewImage: "",
-      fileList: [
-        {
-          uid: "-1",
-          name: "image.png",
-          status: "done",
-          url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        },
-      ],
-      AvartarUrl:
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-
-      user: {
-        Name: "Thân Thanh Duy",
-        Phone: "0961234567",
-        Gmail: "duyttse140971@fpt.edu.vn",
-        Gender: 1,
-        Linking: "6bb6b872-f27b-4e2b-b9c2-921b4c2aafcf",
-        DateOfBirth: "2022-10-18T17:39:24.495+07:00",
-        Status: 1,
-        FileAvatar: null,
-        AvartarUrl:
-          "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        License: [
-          {
-            LicenseId: "1",
-            LicenseCode: "123456789",
-            LicenseName: "Identification",
-            FileImageFacade: null,
-            LicenseImageFacade:
-              "https://cdn.thuvienphapluat.vn/tintuc/uploads/image/2021/01/27/can-cuoc-cong-dan-gan-chip-2(1).jpg",
-            FileImageBackside: null,
-            LicenseImageBackside:
-              "https://congan.tiengiang.gov.vn/documents/2261410/28879612/m%E1%BA%B7t+sau+th%E1%BA%BB+cccd.jpg/ab0f4a7e-69a7-46a4-8b88-e84c36cb2271?t=1612512711938",
-          },
-          {
-            LicenseId: "2",
-            LicenseCode: "987654321",
-            LicenseName: "Driving License",
-            FileImageFacade: null,
-            LicenseImageFacade:
-              "https://cdn.thuvienphapluat.vn/tintuc/uploads/image/2020/08/29/12-hang-giay-phep-lai-xe.png",
-            FileImageBackside: null,
-            LicenseImageBackside:
-              "https://cdn.thuvienphapluat.vn/tintuc/uploads/image/2020/08/29/12-hang-giay-phep-lai-xe.png",
-          },
-        ],
-      },
+      tab: "1",
+      user: {},
+      fileAvatar: null,
+      licIden: "Identification",
+      licDir: "DriverLicense",
+      licVeh: "VehicleRegistration",
+      fileIdentificationFrontSideImage: null,
+      fileIdentificationBackSideImage: null,
+      fileDriverLicenseFrontSideImage: null,
+      fileDriverLicenseBackSideImage: null,
+      fileVehicleRegistrationFrontSideImage: null,
+      fileVehicleRegistrationBackSideImage: null,
     };
   },
+  computed: {
+    ...mapGetters({
+      getterDriverDetail: "driver/getterDriverDetail",
+      getLoadingDetail: "driver/getLoadingDetail",
+    }),
+  },
   methods: {
+    ...mapActions({
+      getDriverByCode: "driver/getDriverByCode",
+    }),
     handleCancel() {
       this.previewVisible = false;
     },
-
+    callback(key) {
+      this.tab = key;
+    },
     handlePreview(info) {
       getBase64(info.file.originFileObj, imageUrl => {
-        this.user.AvartarUrl = imageUrl;
+        this.user.AvatarUrl = imageUrl;
       });
     },
-
     // eslint-disable-next-line
     uploadfiles({ onSuccess, onError, file }) {
       if (file) {
-        this.user.FileAvatar = file;
+        this.fileAvatar = file;
       }
-      console.log(this.user);
     },
-
     handleChange({ fileList }) {
       this.fileList = fileList;
     },
     handleChangeValue(value, position) {
       this.user[position] = value;
-      console.log(this.user);
+    },
+    handleChangeValueVehicle(value, position) {
+      this.user["Vehicle"][position] = value;
+    },
+    handleChangeValueLicense(value, lic, position) {
+      this.user[lic][position] = value;
     },
     handlePreviewImageLicense(imgUrl, upFor, position) {
-      let index = this.user?.License.findIndex(
-        item => item.LicenseId === upFor
-      );
-      if (index !== -1) {
-        this.user.License[index][position] = imgUrl;
-      }
+      this.user[upFor][position] = imgUrl;
     },
     handlePrepareFileToUploadLicense(file, upFor, position) {
-      let index = this.user?.License.findIndex(
-        item => item.LicenseId === upFor
-      );
-      if (index !== -1) {
-        this.user.License[index][position] = file;
-      }
+      this[`file${upFor}${position}`] = file;
     },
     // eslint-disable-next-line
-    handleSaveLicense(licenseId) {
-      // let formData = new FormData();
-      // formData.append("Avatar", file);
+    handleUpdateUser() {
+      let formData = new FormData();
+      formData.append("Name", this.user.Name);
+      formData.append("Gender", this.user.Gender);
+      formData.append("DateOfBirth", this.user.DateOfBirth);
+      if (this.fileAvatar) {
+        formData.append("Avatar", this.fileAvatar);
+      }
+      formData.append("IdentificationCode", this.user.Identification.Code);
+      if (this.fileIdentificationFrontSideImage) {
+        formData.append(
+          "IdentificationFrontSideImage",
+          this.fileIdentificationFrontSideImage
+        );
+      }
+      if (this.fileIdentificationBackSideImage) {
+        formData.append(
+          "IdentificationBackSideImage",
+          this.fileIdentificationBackSideImage
+        );
+      }
+      formData.append("DriverLicenseCode", this.user.DriverLicense.Code);
+      if (this.fileDriverLicenseFrontSideImage) {
+        formData.append(
+          "DriverLicenseFrontSideImage",
+          this.fileDriverLicenseFrontSideImage
+        );
+      }
+      if (this.fileDriverLicenseBackSideImage) {
+        formData.append(
+          "DriverLicenseBackSideImage",
+          this.fileDriverLicenseBackSideImage
+        );
+      }
+      formData.append(
+        "VehicleRegistrationCode",
+        this.user.VehicleRegistration.Code
+      );
+      if (this.fileVehicleRegistrationFrontSideImage) {
+        formData.append(
+          "VehicleRegistrationFrontSideImage",
+          this.fileVehicleRegistrationFrontSideImage
+        );
+      }
+      if (this.fileVehicleRegistrationBackSideImage) {
+        formData.append(
+          "VehicleRegistrationBackSideImage",
+          this.fileVehicleRegistrationBackSideImage
+        );
+      }
+      formData.append("VehicleName", this.user.Vehicle.Name);
+      formData.append("LicensePlate", this.user.Vehicle.LicensePlate);
+
+      for (const value of formData.values()) {
+        console.log(value);
+      }
     },
+    checkEmpty(value) {
+      return value === "" || value === null || value === undefined;
+    },
+    handleUpdateDriver() {
+      let check = true;
+      check = this.$refs.profile.handleSubmit();
+      if (this.$refs[this.licIden]) {
+        check = this.$refs[this.licIden].handleSubmit();
+        check = this.$refs[this.licDir].handleSubmit();
+        check = this.$refs[this.licVeh].handleSubmit();
+        if (!check) {
+          this.tab = "2";
+          setTimeout(() => {
+            this.$refs[this.licIden].handleSubmit();
+            this.$refs[this.licDir].handleSubmit();
+            this.$refs[this.licVeh].handleSubmit();
+          }, 100);
+        }
+      } else {
+        if (
+          this.checkEmpty(this.user.Identification.Code) ||
+          !REGEX.NumberIden.test(this.user.Identification.Code) ||
+          this.checkEmpty(this.user.DriverLicense.Code) ||
+          !REGEX.NumberIden.test(this.user.DriverLicense.Code) ||
+          this.checkEmpty(this.user.VehicleRegistration.Code) ||
+          !REGEX.NumberIden.test(this.user.VehicleRegistration.Code)
+        ) {
+          check = false;
+          this.tab = "2";
+          setTimeout(() => {
+            this.$refs[this.licIden].handleSubmit();
+            this.$refs[this.licDir].handleSubmit();
+            this.$refs[this.licVeh].handleSubmit();
+          }, 100);
+        }
+      }
+      if (check) {
+        this.handleUpdateUser();
+      } else {
+        notification(
+          this,
+          "error",
+          "Please check driver's information again",
+          ""
+        );
+      }
+    },
+  },
+  async mounted() {
+    const res = await this.getDriverByCode(
+      this.$router.currentRoute.params.code
+    );
+    if (res.StatusCode === 200) {
+      this.user = { ...res.Data };
+    }
   },
 };
 </script>

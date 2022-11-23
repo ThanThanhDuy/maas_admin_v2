@@ -61,10 +61,10 @@ export default {
       getReport: "report/getReport",
     }),
     ...mapMutations({
-      setDriver: "report/SET_REPORT",
+      setReport: "report/SET_REPORT",
     }),
     callback(key) {
-      this.setDriver([]);
+      this.setReport([]);
       this.getReport(Number(key));
     },
     rowSelect(record) {
@@ -75,11 +75,11 @@ export default {
     },
   },
   mounted() {
-    this.setDriver([]);
+    this.setReport([]);
     this.getReport({
       page: 1,
-      pageSize: 2,
-      status: null,
+      pageSize: 8,
+      search: "",
     });
   },
 };

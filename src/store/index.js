@@ -9,6 +9,7 @@ import message from "./message";
 import banner from "./banner";
 import setting from "./setting";
 import dashboard from "./dashboard";
+import promotion from "./promotion";
 
 Vue.use(Vuex);
 
@@ -44,5 +45,6 @@ export default new Vuex.Store({
     banner,
     setting,
     dashboard,
+    promotion,
   },
 });
