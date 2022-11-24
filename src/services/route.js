@@ -10,6 +10,28 @@ class RouteService {
     return response;
   }
 
+  async getRoutePaging(search, page, pageSize) {
+    let params = {};
+    if (search) {
+      params = {
+        SearchValue: search,
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    } else {
+      params = {
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    }
+    try {
+      var response = await routeApi.getRoutePaging(params);
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
+
   async createRouteFromListStation(listStation) {
     try {
       var response = await routeApi.createRouteFromListStation(listStation);

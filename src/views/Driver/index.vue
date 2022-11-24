@@ -8,29 +8,45 @@
       :iconHeader="iconHeader"
     />
     <div class="conatinerTab">
-      <a-tabs default-active-key="1" @change="callback">
+      <a-tabs :default-active-key="defaultStatus" @change="callback">
+        <a-tab-pane key="2" tab="Pending">
+          <TableVue
+            :header="HEADER_DRIVER"
+            :data="getterDriver"
+            :isLoading="getLoading"
+            :rowSelect="rowSelect"
+            :pagination="getPagination"
+            :handleTableChange="handleTableChange"
+          />
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="Reject">
+          <TableVue
+            :header="HEADER_DRIVER"
+            :data="getterDriver"
+            :isLoading="getLoading"
+            :rowSelect="rowSelect"
+            :pagination="getPagination"
+            :handleTableChange="handleTableChange"
+          />
+        </a-tab-pane>
         <a-tab-pane key="1" tab="Working">
           <TableVue
             :header="HEADER_DRIVER"
             :data="getterDriver"
             :isLoading="getLoading"
             :rowSelect="rowSelect"
+            :pagination="getPagination"
+            :handleTableChange="handleTableChange"
           />
         </a-tab-pane>
-        <a-tab-pane key="2" tab="Pendding">
-          <TableVue
-            :header="HEADER_DRIVER"
-            :data="getterDriver"
-            :isLoading="getLoading"
-            :rowSelect="rowSelect"
-          />
-        </a-tab-pane>
-        <a-tab-pane key="3" tab="Blocked"
+        <a-tab-pane key="0" tab="Blocked"
           ><TableVue
             :header="HEADER_DRIVER"
             :data="getterDriver"
             :isLoading="getLoading"
             :rowSelect="rowSelect"
+            :pagination="getPagination"
+            :handleTableChange="handleTableChange"
         /></a-tab-pane>
       </a-tabs>
     </div>
@@ -42,6 +58,7 @@ import HeaderPage from "@/components/commonsPage/Header";
 import { HEADER_DRIVER } from "@/constants/table/header";
 import TableVue from "@/components/commons/Table";
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import { STATUS_DRIVER } from "@/constants/status";
 
 export default {
   name: "DriverVue",
@@ -56,12 +73,19 @@ export default {
       titleButton: "",
       iconHeader: "",
       HEADER_DRIVER,
+      STATUS_DRIVER,
+      pagi: {},
+      PAGE_SIZE: 11,
+      search: "",
+      statusChange: 2,
+      defaultStatus: STATUS_DRIVER["Pending"].toString(),
     };
   },
   computed: {
     ...mapGetters({
       getterDriver: "driver/getterDriver",
       getLoading: "driver/getLoading",
+      getPagination: "driver/getPagination",
     }),
   },
   methods: {
@@ -71,12 +95,29 @@ export default {
     ...mapMutations({
       setDriver: "driver/SET_DRIVER",
     }),
-    callback(key) {
+    async callback(key) {
+      this.statusChange = Number(key);
       this.setDriver([]);
-      this.getDriver(key === "3" ? 0 : Number(key));
+      await this.getDriver({
+        search: this.search,
+        page: 1,
+        pageSize: this.PAGE_SIZE,
+        status: Number(key),
+      });
     },
-    searchValue(value) {
-      console.log("driver", value);
+    async searchValue(value) {
+      this.search = value;
+      const res = await this.getDriver({
+        search: value,
+        page: 1,
+        pageSize: this.PAGE_SIZE,
+        status: this.statusChange,
+      });
+      this.pagi = {
+        total: res.Data?.TotalItemsCount,
+        current: res.Data?.Page,
+        pageSize: res.Data?.PageSize,
+      };
     },
     rowSelect(record, index) {
       console.log("record", record);
@@ -88,10 +129,29 @@ export default {
         },
       });
     },
+    handleTableChange(pagination) {
+      this.pagi = pagination;
+      this.getDriver({
+        search: this.search,
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+        status: this.statusChange,
+      });
+    },
   },
-  mounted() {
+  async mounted() {
     this.setDriver([]);
-    this.getDriver(1);
+    const res = await this.getDriver({
+      search: this.search,
+      page: 1,
+      pageSize: this.PAGE_SIZE,
+      status: this.defaultStatus,
+    });
+    this.pagi = {
+      total: res.Data?.TotalItemsCount,
+      current: res.Data?.Page,
+      pageSize: res.Data?.PageSize,
+    };
   },
 };
 </script>

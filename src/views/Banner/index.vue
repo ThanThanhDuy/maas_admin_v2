@@ -5,45 +5,66 @@
       :isSearch="isSearch"
       :titleButton="titleButton"
       :iconHeader="iconHeader"
+      :placeholder="placeholder"
     />
-    <div v-if="getLoading" class="loading">
-      <a-spin />
+    <div style="margin-top: 40px">
+      <TableVue
+        :header="HEADER_BANNER"
+        :data="getterListBanner"
+        :isLoading="getLoading"
+        :rowSelect="rowSelect"
+      />
     </div>
-    <a-row v-else>
-      <a-col
-        class="containerBox"
-        :span="8"
-        v-for="(banner, index) in getterListBanner"
-        :key="index"
-      >
-        <div>
-          <div class="containerItem">
-            <div class="containerItem__image">
-              <img :src="banner.FilePath" alt="" />
-            </div>
-            <p class="containerItem__title">{{ banner.Title }}</p>
-            <p class="containerItem__content">{{ banner.Content }}</p>
-          </div>
+    <a-modal
+      :title="isCreate ? 'Create Station' : 'Update Station'"
+      :visible="visible"
+      :width="700"
+      :footer="null"
+      class="modalStation"
+      :closable="false"
+    >
+      <div>
+        <a-row> </a-row>
+      </div>
+      <a-divider />
+      <div style="display: flex; justify-content: flex-end">
+        <div style="display: flex; gap: 10px; align-items: center">
+          <a-button key="back" @click="handleCancel"> Close </a-button>
+          <a-button v-if="!isCreate" type="danger" @click="handleDelete">
+            Delete
+          </a-button>
+          <a-form-item>
+            <a-button key="submit" type="primary" html-type="submit">
+              {{ isCreate ? "Create" : "Update" }}
+            </a-button>
+          </a-form-item>
         </div>
-      </a-col>
-    </a-row>
+      </div>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import HeaderPage from "@/components/commonsPage/Header";
+import TableVue from "@/components/commons/Table";
+import { HEADER_BANNER } from "@/constants/table/header";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "BannerVue",
   components: {
     HeaderPage,
+    TableVue,
   },
   data() {
     return {
       title: "Banner",
-      isSearch: false,
-      titleButton: "",
-      iconHeader: "",
+      isSearch: true,
+      HEADER_BANNER,
+      titleButton: "Create Banner",
+      iconHeader: "plus",
+      placeholder: "Search Banner",
+      isCreate: false,
+      visible: false,
     };
   },
   computed: {
@@ -56,6 +77,13 @@ export default {
     ...mapActions({
       getListBanner: "banner/getListBanner",
     }),
+    rowSelect(record) {
+      this.visible = true;
+      console.log(record);
+    },
+    handleCancel() {
+      this.visible = false;
+    },
   },
   mounted() {
     this.getListBanner();

@@ -59,7 +59,7 @@ export default {
         const res = await reportService.getReport(
           params.page,
           params.pageSize,
-          params.status
+          params.search
         );
         console.log(res);
         if (res && res.StatusCode === 200) {

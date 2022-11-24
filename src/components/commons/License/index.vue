@@ -27,16 +27,34 @@
         "
       >
         <div style="width: 400px">
-          <a-form-item label="Code">
-            <a-input allowClear placeholder="Code" v-model="code" />
-          </a-form-item>
+          <a-form :form="form">
+            <a-form-item label="Code">
+              <a-input
+                allowClear
+                placeholder="Name"
+                v-decorator="[
+                  'Code',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Please input Code!',
+                      },
+                    ],
+                    initialValue: licenseCode,
+                  },
+                ]"
+                @blur="handleChangeCode"
+              />
+            </a-form-item>
+          </a-form>
         </div>
         <div>
-          <ButtonVue
+          <!-- <ButtonVue
             iconHeader="save"
             titleButton="Save"
             :handleClickButton="handleSave"
-          />
+          /> -->
         </div>
       </div>
       <a-divider />
@@ -47,14 +65,15 @@
 <script>
 import TitleUser from "@/components/commons/TitleUser";
 import UploadImage from "@/components/commons/UploadImage";
-import ButtonVue from "@/components/commons/Button";
+import { REGEX } from "@/constants/regex";
+// import ButtonVue from "@/components/commons/Button";
 
 export default {
   name: "LicenseVue",
   components: {
     TitleUser,
     UploadImage,
-    ButtonVue,
+    // ButtonVue,
   },
   props: {
     title: {
@@ -81,41 +100,64 @@ export default {
       type: Function,
       default: () => {},
     },
-    handleSaveLicense: {
+    handlePrepareFileToUploadLicense: {
       type: Function,
       default: () => {},
     },
-    handlePrepareFileToUploadLicense: {
+    handleChangeValueLicense: {
+      type: Function,
+      default: () => {},
+    },
+    handleUpdateUser: {
       type: Function,
       default: () => {},
     },
   },
   data() {
     return {
-      code: this.licenseCode,
-      idenFacade:
-        "https://vigo-app-bucket.s3.ap-southeast-1.amazonaws.com/user/avatar/5631bcef-4992-4857-a6a4-6e2fe39d348f.png?X-Amz-Expires=3600&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZJOTSEPVXCOZ7NML/20221017/ap-southeast-1/s3/aws4_request&X-Amz-Date=20221017T055258Z&X-Amz-SignedHeaders=host&X-Amz-Signature=4f054e7cfa1f20584101d70344284990f0ca5f739c8facb5bdbb69e2879233e6",
+      form: this.$form.createForm(this, { name: this.licenseId }),
     };
   },
   methods: {
     changeImagePreview(imgUrl, upFor, position) {
       if (position === "Facade") {
-        position = "LicenseImageFacade";
+        position = "FrontSideImage";
       } else {
-        position = "LicenseImageBackside";
+        position = "BackSideImage";
       }
       this.handlePreviewImageLicense(imgUrl, upFor, position);
     },
-    handleSave() {
-      this.handleSaveLicense(this.licenseId);
-    },
     handlePrepareFileToUpload(file, upFor, position) {
       if (position === "Facade") {
-        position = "FileImageFacade";
+        position = "FrontSideImage";
       } else {
-        position = "FileImageBackside";
+        position = "BackSideImage";
       }
       this.handlePrepareFileToUploadLicense(file, upFor, position);
+    },
+    handleChangeCode() {
+      const lic = this.form.getFieldsValue(["Code"]);
+      if (lic.Code) {
+        if (!REGEX.NumberIden.test(lic.Code)) {
+          this.form.setFields({
+            Code: {
+              value: lic.Code,
+              errors: [new Error(`Please input a valid ${this.title} Number!`)],
+            },
+          });
+          return false;
+        }
+      }
+      this.handleChangeValueLicense(lic.Code, this.licenseId, "Code");
+      return true;
+    },
+    handleSubmit() {
+      if (this.handleChangeCode()) {
+        return true;
+      } else {
+        console.log("error" + this.licenseId);
+        return false;
+      }
     },
   },
 };

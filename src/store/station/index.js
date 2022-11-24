@@ -9,6 +9,7 @@ export default {
   state: {
     listStation: [],
     isLoading: false,
+    pagination: {},
   },
   getters: {
     listStation(state) {
@@ -17,6 +18,9 @@ export default {
     getLoading(state) {
       return state.isLoading;
     },
+    getPagination(state) {
+      return state.pagination;
+    },
   },
   mutations: {
     SET_LIST_STATION(state, listStation) {
@@ -24,6 +28,9 @@ export default {
     },
     SET_IS_LOADING(state, isLoading) {
       state.isLoading = isLoading;
+    },
+    SET_PAGINATION(state, pagination) {
+      state.pagination = pagination;
     },
   },
   actions: {
@@ -39,6 +46,33 @@ export default {
         commit("SET_IS_LOADING", false);
         console.log(
           "🚀 ~ file: index.js ~ line 41 ~ getAllStation ~ error",
+          error
+        );
+      }
+    },
+    async getStationPaging({ commit }, params) {
+      params.loading && commit("SET_IS_LOADING", true);
+      try {
+        const res = await stationService.getStationPaging(
+          params.search,
+          params.page,
+          params.pageSize
+        );
+        console.log(res);
+        if (res && res.StatusCode === 200) {
+          commit("SET_LIST_STATION", res.Data?.Items);
+          commit("SET_PAGINATION", {
+            total: res.Data.TotalItemsCount,
+            current: res.Data.Page,
+            pageSize: res.Data.PageSize,
+          });
+          params.loading && commit("SET_IS_LOADING", false);
+          return res;
+        }
+      } catch (error) {
+        params.loading && commit("SET_IS_LOADING", false);
+        console.log(
+          "🚀 ~ file: index.js ~ line 46 ~ getStationPaging ~ error",
           error
         );
       }

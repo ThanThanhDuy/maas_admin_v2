@@ -1,6 +1,7 @@
 <template>
   <div class="containerButton_custom">
     <a-button
+      :html-type="typeHtml"
       type="primary"
       :icon="iconHeader"
       @click="handleButton"
@@ -30,6 +31,10 @@ export default {
     isDisabled: {
       type: Boolean,
       default: false,
+    },
+    typeHtml: {
+      type: String,
+      default: "button",
     },
   },
   methods: {

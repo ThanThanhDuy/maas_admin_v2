@@ -11,6 +11,14 @@ export const STATUS_DRIVER = {
     color: "orange",
     status: "Pendding",
   },
+  3: {
+    color: "red",
+    status: "Reject",
+  },
+  Inactive: 0,
+  Active: 1,
+  Pending: 2,
+  Rejected: 3,
 };
 
 export const STATUS_REPORT = {
@@ -78,5 +86,16 @@ export const STATUS_BOOKING_DETAIL_DRIVER = {
   3: {
     color: "green",
     status: "Completed",
+  },
+};
+
+export const STATUS_PROMOTION = {
+  0: {
+    color: "red",
+    status: "Inactive",
+  },
+  1: {
+    color: "green",
+    status: "Active",
   },
 };

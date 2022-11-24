@@ -1,12 +1,20 @@
 import reportApi from "@/apis/report";
 
 class ReportService {
-  async getReport(page, pageSize, status = null) {
-    const params = {
-      Page: page,
-      PageSize: pageSize,
-      Status: status,
-    };
+  async getReport(page, pageSize, search) {
+    let params;
+    if (search) {
+      params = {
+        SearchValue: search,
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    } else {
+      params = {
+        "Paging.Page": page,
+        "Paging.PageSize": pageSize,
+      };
+    }
     try {
       var response = await reportApi.getReport(params);
     } catch (error) {
