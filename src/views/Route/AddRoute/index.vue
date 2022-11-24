@@ -1,7 +1,21 @@
 <template>
   <div class="container">
-    <div style="width: 50%">
+    <div style="width: 50%; position: relative">
       <HeaderBack />
+      <div
+        v-if="getListStationAdd.length > 0"
+        style="position: absolute; top: 60px; width: 100%"
+      >
+        <a-row style="margin-left: 44px">
+          <a-col :span="24"
+            ><a-input
+              style="width: calc(100% - 84px); height: 35px"
+              placeholder="Name route"
+              v-model="nameRoute"
+            ></a-input
+          ></a-col>
+        </a-row>
+      </div>
       <FromVue
         :getStation="getStation"
         :handleSave="handleSave"
@@ -36,6 +50,7 @@ export default {
   data() {
     return {
       iconSave: "save",
+      nameRoute: "",
     };
   },
   components: {
@@ -57,7 +72,7 @@ export default {
       setListStationAdd: "route/SET_LIST_STATION_ADD",
     }),
     async handleSave() {
-      this.iconSave = "loading";
+      // this.iconSave = "loading";
       // check empty data
       let checkEmptyData = true;
       for (const item of this.getListStationAdd) {
@@ -66,9 +81,16 @@ export default {
           break;
         }
       }
+      if (!this.nameRoute) {
+        setTimeout(() => {
+          // this.iconSave = "save";
+          notification(this, "error", "Name route not empty", "");
+        }, 1000);
+        return;
+      }
       if (!checkEmptyData) {
         setTimeout(() => {
-          this.iconSave = "save";
+          // this.iconSave = "save";
           notification(this, "error", "Code or Name station can't empty", "");
         }, 1000);
         return;
@@ -78,24 +100,36 @@ export default {
       const checkDuplicate = new Set(data).size === data.length;
       if (!checkDuplicate) {
         setTimeout(() => {
-          this.iconSave = "save";
+          // this.iconSave = "save";
           notification(this, "error", "Station already exists on route", "");
         }, 1000);
         return;
       }
-      const res = await this.createRouteFromListStation(data);
-      if (res && res.StatusCode === 200) {
-        setTimeout(() => {
-          this.iconSave = "save";
-          notification(this, "success", "Create route successfully", "");
-          this.$router.push({ name: "Routes" });
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          this.iconSave = "save";
-          notification(this, "error", "Create route failed", "");
-        }, 1000);
-      }
+      this.$confirm({
+        title: `Are you sure you want to add this route?`,
+        content: ``,
+        okText: "Yes",
+        cancelText: "No",
+        onOk: async () => {
+          const res = await this.createRouteFromListStation({
+            listStation: data,
+            routeName: this.nameRoute,
+          });
+          if (res && res.StatusCode === 200) {
+            setTimeout(() => {
+              // this.iconSave = "save";
+              notification(this, "success", "Create route successfully", "");
+              this.$router.push({ name: "Routes" });
+            }, 1000);
+          } else {
+            setTimeout(() => {
+              // this.iconSave = "save";
+              notification(this, "error", "Create route failed", "");
+            }, 1000);
+          }
+        },
+        onCancel() {},
+      });
     },
     handleChangeName(value, index) {
       let listStationTmp = [...this.getListStationAdd];

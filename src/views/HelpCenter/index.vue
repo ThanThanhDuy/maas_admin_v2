@@ -5,6 +5,7 @@
       :titleButton="titleButton"
       :iconHeader="iconHeader"
       :placeholder="placeholder"
+      :searchValue="searchValue"
     />
     <div class="conatinerTab">
       <a-tabs default-active-key="2" @change="callback">
@@ -21,6 +22,8 @@
             :data="getReportHandle"
             :isLoading="getLoading"
             :rowSelect="rowSelect"
+            :pagination="getPagination"
+            :handleTableChange="handleTableChange"
           />
         </a-tab-pane>
       </a-tabs>
@@ -45,6 +48,7 @@ export default {
       getterReport: "report/getterReport",
       getReportHandle: "report/getterReportHandle",
       getLoading: "report/getLoading",
+      getPagination: "report/getPagination",
     }),
   },
   data() {
@@ -54,6 +58,10 @@ export default {
       iconHeader: "",
       placeholder: "Search report by name user",
       HEADER_PROBLEM,
+      pageSize: 10,
+      total: 0,
+      pagi: {},
+      valueSearch: "",
     };
   },
   methods: {
@@ -67,20 +75,46 @@ export default {
       this.setReport([]);
       this.getReport(Number(key));
     },
+    async searchValue(value) {
+      this.valueSearch = value;
+      const res = await this.getReport({
+        search: value,
+        page: 1,
+        pageSize: this.pageSize,
+      });
+      this.pagi = {
+        total: res.Data.TotalItemsCount,
+        current: res.Data.Page,
+        pageSize: res.Data.PageSize,
+      };
+    },
     rowSelect(record) {
       this.$router.push({
         name: "ReportDetail",
         params: { code: record.Code },
       });
     },
+    handleTableChange(pagination) {
+      this.pagi = pagination;
+      this.getReport({
+        search: this.valueSearch,
+        page: pagination.current,
+        pageSize: pagination.pageSize,
+      });
+    },
   },
-  mounted() {
+  async mounted() {
     this.setReport([]);
-    this.getReport({
+    const res = await this.getReport({
+      search: this.valueSearch,
       page: 1,
-      pageSize: 8,
-      search: "",
+      pageSize: this.pageSize,
     });
+    this.pagi = {
+      total: res.Data.TotalItemsCount,
+      current: res.Data.Page,
+      pageSize: res.Data.PageSize,
+    };
   },
 };
 </script>

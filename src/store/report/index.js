@@ -11,6 +11,7 @@ export default {
     isLoading: false,
     dataReport: {},
     isLoadingDataReport: false,
+    pagination: {},
   },
   getters: {
     getterReport(state) {
@@ -37,6 +38,9 @@ export default {
     getLoadingDataReport(state) {
       return state.isLoadingDataReport;
     },
+    getPagination(state) {
+      return state.pagination;
+    },
   },
   mutations: {
     SET_REPORT(state, report) {
@@ -51,6 +55,9 @@ export default {
     SET_LOADING_DATA_REPORT(state, isLoadingDataReport) {
       state.isLoadingDataReport = isLoadingDataReport;
     },
+    SET_PAGINATION(state, pagination) {
+      state.pagination = pagination;
+    },
   },
   actions: {
     async getReport({ commit }, params) {
@@ -61,6 +68,11 @@ export default {
           params.pageSize,
           params.search
         );
+        commit("SET_PAGINATION", {
+          total: res.Data.TotalItemsCount,
+          current: res.Data.Page,
+          pageSize: res.Data.PageSize,
+        });
         console.log(res);
         if (res && res.StatusCode === 200) {
           commit("SET_REPORT", res);

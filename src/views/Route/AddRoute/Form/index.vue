@@ -5,6 +5,7 @@
         v-if="showDelete"
         :iconHeader="iconDelete"
         :titleButton="titleDelete"
+        :handleClickButton="handleDeleteRouteByCode"
       />
       <ButtonVue
         :iconHeader="iconSave"
@@ -197,6 +198,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    handleDeleteRoute: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -293,6 +298,9 @@ export default {
       // this.handleDeleteStation(index);
       // this.visible = false;
     },
+    handleDeleteRouteByCode() {
+      this.handleDeleteRoute();
+    },
   },
   mounted() {
     // get name url
@@ -305,14 +313,14 @@ export default {
 <style lang="scss">
 @import "@/theme/commons/variable.scss";
 .containerFormSave {
-  margin-top: -35px;
+  margin-top: -30px;
   display: flex;
   justify-content: flex-end;
   margin-right: 16px;
   gap: 16px;
 }
 .containerFormRoute {
-  margin-top: 20px;
+  margin-top: 75px;
   margin-right: 16px;
   max-height: calc(100vh - 64px - 16px - 40px - 100px);
   overflow-y: auto;
@@ -324,8 +332,9 @@ export default {
     &__input {
       width: calc((100% - 40px - 40px - 20px - 34px) / 2);
       .ant-input {
-        height: 40px;
-        border-radius: 10px;
+        // height: 40px;
+        height: 35px;
+        // border-radius: 5px;
         &:focus {
           border-color: $green40;
           box-shadow: 0 0 0 2px rgba(49, 176, 87, 0.2);
@@ -343,8 +352,9 @@ export default {
         width: 100%;
       }
       .ant-select-auto-complete.ant-select .ant-input {
-        height: 40px;
-        border-radius: 10px;
+        // height: 40px;
+        // border-radius: 10px;
+        height: 35px;
         &:focus {
           border-color: $green40;
           box-shadow: 0 0 0 2px rgba(49, 176, 87, 0.2);
@@ -358,8 +368,8 @@ export default {
     &__button {
       width: 40px;
       .ant-btn {
-        width: 40px;
-        height: 40px;
+        // width: 40px;
+        // height: 40px;
         &:hover {
           border-color: $green40;
           box-shadow: 0 0 0 2px rgba(49, 176, 87, 0.2);

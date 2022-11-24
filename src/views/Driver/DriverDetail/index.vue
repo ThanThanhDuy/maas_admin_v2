@@ -64,6 +64,7 @@
                 :handleChangeValue="handleChangeValue"
                 :handleUpdateUser="handleUpdateUser"
                 :handleChangeValueVehicle="handleChangeValueVehicle"
+                :listVehicle="listVehicle"
               />
             </div>
 
@@ -193,6 +194,8 @@ import ProfileVue from "@/components/commons/Profile";
 import { mapActions, mapGetters } from "vuex";
 import { REGEX } from "@/constants/regex";
 import { notification } from "@/utils/notification";
+import vehicleService from "@/services/vehicle";
+import driverService from "@/services/driver";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -229,6 +232,7 @@ export default {
       fileDriverLicenseBackSideImage: null,
       fileVehicleRegistrationFrontSideImage: null,
       fileVehicleRegistrationBackSideImage: null,
+      listVehicle: [],
     };
   },
   computed: {
@@ -277,11 +281,19 @@ export default {
       this[`file${upFor}${position}`] = file;
     },
     // eslint-disable-next-line
-    handleUpdateUser() {
+    async handleUpdateUser() {
       let formData = new FormData();
+      formData.append(
+        "PhoneNumber",
+        this.user.PhoneNumber.length === 10
+          ? `+84${this.user.PhoneNumber.substring(1)}`
+          : `+84${this.user.PhoneNumber}`
+      );
+      formData.append("Email", this.user.Gmail);
       formData.append("Name", this.user.Name);
       formData.append("Gender", this.user.Gender);
       formData.append("DateOfBirth", this.user.DateOfBirth);
+      formData.append("status", this.user.Status);
       if (this.fileAvatar) {
         formData.append("Avatar", this.fileAvatar);
       }
@@ -329,9 +341,16 @@ export default {
       }
       formData.append("VehicleName", this.user.Vehicle.Name);
       formData.append("LicensePlate", this.user.Vehicle.LicensePlate);
-
-      for (const value of formData.values()) {
-        console.log(value);
+      formData.append("VehicleTypeId", this.user.Vehicle.VehicleTypeId);
+      const res = await driverService.updateDriverByCode(
+        this.user.Code,
+        formData
+      );
+      console.log(res);
+      if (res && res.StatusCode === 200) {
+        notification(this, "success", "Update Driver Success", "");
+      } else {
+        notification(this, "error", "Update Driver Fail", "");
       }
     },
     checkEmpty(value) {
@@ -339,12 +358,15 @@ export default {
     },
     handleUpdateDriver() {
       let check = true;
+      let checkIden = true;
+      let checkDir = true;
+      let checkVeh = true;
       check = this.$refs.profile.handleSubmit();
       if (this.$refs[this.licIden]) {
-        check = this.$refs[this.licIden].handleSubmit();
-        check = this.$refs[this.licDir].handleSubmit();
-        check = this.$refs[this.licVeh].handleSubmit();
-        if (!check) {
+        checkIden = this.$refs[this.licIden].handleSubmit();
+        checkDir = this.$refs[this.licDir].handleSubmit();
+        checkVeh = this.$refs[this.licVeh].handleSubmit();
+        if (!checkIden || !checkDir || !checkVeh) {
           this.tab = "2";
           setTimeout(() => {
             this.$refs[this.licIden].handleSubmit();
@@ -388,6 +410,22 @@ export default {
     );
     if (res.StatusCode === 200) {
       this.user = { ...res.Data };
+    }
+  },
+  async created() {
+    const res = await vehicleService.getAllVehicle();
+    if (res && res.StatusCode === 200) {
+      let result = [];
+      for (const item of res.Data) {
+        for (const vehicle of item?.VehicleTypes) {
+          result.push({
+            Id: vehicle.Id,
+            Name: vehicle.Name,
+          });
+        }
+      }
+      console.log(result);
+      this.listVehicle = result;
     }
   },
 };

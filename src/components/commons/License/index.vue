@@ -30,6 +30,7 @@
           <a-form :form="form">
             <a-form-item label="Code">
               <a-input
+                :maxLength="12"
                 allowClear
                 placeholder="Name"
                 v-decorator="[

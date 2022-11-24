@@ -178,7 +178,7 @@
             </a-tag>
           </a-col>
         </a-row>
-        <div v-if="report?.Driver" style="height: 80px"></div>
+        <div v-if="!report?.Driver" style="height: 90px"></div>
       </div>
       <div style="width: 100%; height: 100px">
         <div style="margin-left: 20px">
@@ -317,7 +317,15 @@ export default {
             );
             if (res.StatusCode === 200) {
               notification(this, "success", `Deny report successfully`, "");
-              this.$router.push("/help");
+              const res = await this.getDataReport(this.$route.params.code);
+              console.log(res);
+              if (res.Data) {
+                this.report = res.Data.Data;
+                this.user = res.Data.User;
+                this.startStation = res.Data.Data.StartStation;
+                this.endStation = res.Data.Data.EndStation;
+                this.reportInfo = res.Data;
+              }
             } else {
               notification(this, "error", res.Message, "");
             }
@@ -347,7 +355,15 @@ export default {
                 `Processed report successfully`,
                 ""
               );
-              this.$router.push("/help");
+              const res = await this.getDataReport(this.$route.params.code);
+              console.log(res);
+              if (res.Data) {
+                this.report = res.Data.Data;
+                this.user = res.Data.User;
+                this.startStation = res.Data.Data.StartStation;
+                this.endStation = res.Data.Data.EndStation;
+                this.reportInfo = res.Data;
+              }
             } else {
               notification(this, "error", res.Message, "");
             }

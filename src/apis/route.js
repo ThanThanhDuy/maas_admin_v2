@@ -15,14 +15,19 @@ class RouteApi {
     return await axiosClient.get(url, { params });
   }
 
-  async createRouteFromListStation(StationCodes) {
+  async createRouteFromListStation(StationCodes, RouteName) {
     const url = `${this.PREFIX}`;
-    return await axiosClient.post(url, { StationCodes });
+    return await axiosClient.post(url, { StationCodes, RouteName });
   }
 
-  async updateRouteFromListStation(RouteCode, StationCodes) {
+  async updateRouteFromListStation(RouteCode, StationCodes, RouteName) {
     const url = `${this.PREFIX}`;
-    return await axiosClient.put(url, { RouteCode, StationCodes });
+    return await axiosClient.put(url, { RouteCode, StationCodes, RouteName });
+  }
+
+  async deleteRouteByCode(code) {
+    const url = `${this.PREFIX}${code}`;
+    return await axiosClient.delete(url);
   }
 }
 
