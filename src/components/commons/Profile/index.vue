@@ -196,8 +196,9 @@
           <a-form-item label="Vehicle Type">
             <a-select
               style="width: 100%"
+              @change="e => handleChangeVehicleType(e)"
               v-decorator="[
-                'VehicleType',
+                'VehicleTypeId',
                 {
                   rules: [
                     {
@@ -205,13 +206,17 @@
                       message: 'Please Select Vehicle Type!',
                     },
                   ],
-                  initialValue: user.Vehicle?.Type,
+                  initialValue: user.Vehicle?.VehicleTypeId,
                 },
               ]"
             >
-              <a-select-option :value="1"> bike </a-select-option>
-              <a-select-option :value="2"> car4 </a-select-option>
-              <a-select-option :value="3"> car7 </a-select-option>
+              <a-select-option
+                :value="veh.Id"
+                :key="veh.Id"
+                v-for="veh in listVehicle"
+              >
+                {{ veh.Id }}{{ veh.Name }}
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -230,6 +235,7 @@
 import { REGEX } from "@/constants/regex";
 import moment from "moment";
 import { STATUS_DRIVER } from "@/constants/status";
+
 const options = [
   { label: "Female", value: 0 },
   { label: "Male", value: 1 },
@@ -260,6 +266,10 @@ export default {
     handleChangeValueVehicle: {
       type: Function,
       default: () => {},
+    },
+    listVehicle: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -429,6 +439,12 @@ export default {
         }
       }
       this.handleChangeValueVehicle(plateVeh.LicensePlate, "LicensePlate");
+      return true;
+    },
+    handleChangeVehicleType(e) {
+      // const vehId = this.form.getFieldsValue(["VehicleTypeId"]);
+      // console.log(vehId.VehicleTypeId);
+      this.handleChangeValueVehicle(e, "VehicleTypeId");
       return true;
     },
   },

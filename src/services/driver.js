@@ -33,6 +33,15 @@ class DriverService {
     }
     return response;
   }
+
+  async updateDriverByCode(code, params) {
+    try {
+      var response = await driverApi.updateDriverByCode(code, params);
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
 }
 
 const driverService = new DriverService();

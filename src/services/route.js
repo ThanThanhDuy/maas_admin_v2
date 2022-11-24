@@ -32,21 +32,34 @@ class RouteService {
     return response;
   }
 
-  async createRouteFromListStation(listStation) {
+  async createRouteFromListStation(listStation, RouteName) {
     try {
-      var response = await routeApi.createRouteFromListStation(listStation);
+      var response = await routeApi.createRouteFromListStation(
+        listStation,
+        RouteName
+      );
     } catch (error) {
       return error;
     }
     return response;
   }
 
-  async updateRouteFromListStation(routeCode, listStation) {
+  async updateRouteFromListStation(routeCode, listStation, routeName) {
     try {
       var response = await routeApi.updateRouteFromListStation(
         routeCode,
-        listStation
+        listStation,
+        routeName
       );
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
+
+  async deleteRouteByCode(code) {
+    try {
+      var response = await routeApi.deleteRouteByCode(code);
     } catch (error) {
       return error;
     }

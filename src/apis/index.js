@@ -26,7 +26,7 @@ axiosClient.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response.data.StatusCode === 401) {
+    if (error.response.StatusCode === 401) {
       router.push("/login");
     }
     throw error.response.data;

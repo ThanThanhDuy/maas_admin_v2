@@ -90,9 +90,12 @@ export default {
       }
     },
     // eslint-disable-next-line
-    async createRouteFromListStation({ commit }, listStation) {
+    async createRouteFromListStation({ commit }, data) {
       try {
-        const res = await routeService.createRouteFromListStation(listStation);
+        const res = await routeService.createRouteFromListStation(
+          data.listStation,
+          data.routeName
+        );
         return res;
       } catch (error) {
         console.log(
@@ -106,7 +109,8 @@ export default {
       try {
         const res = await routeService.updateRouteFromListStation(
           data.routeCode,
-          data.listStation
+          data.listStation,
+          data.nameRoute
         );
         return res;
       } catch (error) {
@@ -127,6 +131,7 @@ export default {
             commit("SET_LIST_STATION_PROPS", route.Stations);
             commit("SET_ROUTE_BY_CODE", route);
             commit("SET_LOADING", false);
+            return route;
           }
         }
       } catch (error) {

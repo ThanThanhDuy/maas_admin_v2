@@ -1,4 +1,5 @@
 import axiosClient from ".";
+import axiosClientFormData from "./indexFormData";
 
 class DriverApi {
   constructor() {
@@ -13,6 +14,11 @@ class DriverApi {
   async getDriverByCode(code) {
     const url = `${this.PREFIX}${code}`;
     return await axiosClient.get(url);
+  }
+
+  async updateDriverByCode(code, params) {
+    const url = `${this.PREFIX}${code}`;
+    return await axiosClientFormData.put(url, params);
   }
 }
 
