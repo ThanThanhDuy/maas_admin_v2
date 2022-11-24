@@ -62,7 +62,7 @@
             <span class="labelDetail">Process by Admin</span>
           </a-col>
           <a-col :span="16">
-            <span></span>
+            <span>{{ reportInfo?.UpdatedAdmin?.Name }}</span>
           </a-col>
         </a-row>
       </div>
@@ -74,8 +74,8 @@
     <div class="containerUserReport">
       <BoxUser :user="user" :isDriver="false" />
       <BoxUser
-        v-if="diver"
-        :user="diver"
+        v-if="report?.Driver"
+        :user="report?.Driver"
         :isDriver="true"
         :loading="getLoadingDataReport"
       />
@@ -146,13 +146,13 @@
         </a-row>
         <a-divider />
         <p
-          v-if="!driver"
+          v-if="report?.Driver"
           style="font-size: 20px; font-weight: 500; margin-bottom: 25px"
         >
           Booking Detail Driver
         </p>
         <a-row
-          v-if="!driver"
+          v-if="report?.Driver"
           style="margin-bottom: 15px; display: flex; align-items: center"
         >
           <a-col :span="8">
@@ -162,7 +162,7 @@
             <span>{{ report?.Driver?.BookingDetailDriverCode }}</span>
           </a-col>
         </a-row>
-        <a-row v-if="!driver" style="margin-bottom: 15px">
+        <a-row v-if="report?.Driver" style="margin-bottom: 15px">
           <a-col :span="8">
             <span class="labelDetail">Status</span>
           </a-col>
@@ -178,7 +178,7 @@
             </a-tag>
           </a-col>
         </a-row>
-        <div v-if="!driver" style="height: 80px"></div>
+        <div v-if="report?.Driver" style="height: 80px"></div>
       </div>
       <div style="width: 100%; height: 100px">
         <div style="margin-left: 20px">
@@ -272,7 +272,6 @@ export default {
   },
   data() {
     return {
-      diver: null,
       user: {},
       report: {},
       STATUS_BOOKING_DETAIL,
@@ -363,7 +362,6 @@ export default {
   async mounted() {
     const res = await this.getDataReport(this.$route.params.code);
     if (res.Data) {
-      this.diver = res.Data.Data.Driver;
       this.report = res.Data.Data;
       this.user = res.Data.User;
       this.startStation = res.Data.Data.StartStation;
