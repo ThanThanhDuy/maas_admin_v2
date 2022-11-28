@@ -9,7 +9,7 @@ export const STATUS_DRIVER = {
   },
   2: {
     color: "orange",
-    status: "Pendding",
+    status: "Pending",
   },
   3: {
     color: "red",
@@ -24,7 +24,7 @@ export const STATUS_DRIVER = {
 export const STATUS_REPORT = {
   1: {
     color: "orange",
-    status: "Pendding",
+    status: "Pending",
   },
   2: {
     color: "green",
@@ -34,7 +34,7 @@ export const STATUS_REPORT = {
     color: "red",
     status: "Processing Denied",
   },
-  Pendding: 1,
+  Pending: 1,
   Processed: 2,
   ProcessingDenied: 3,
 };

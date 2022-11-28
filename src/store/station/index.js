@@ -41,6 +41,8 @@ export default {
         if (res && res.StatusCode === 200) {
           commit("SET_LIST_STATION", res.Data);
           commit("SET_IS_LOADING", false);
+        } else {
+          commit("SET_IS_LOADING", false);
         }
       } catch (error) {
         commit("SET_IS_LOADING", false);
@@ -68,6 +70,8 @@ export default {
           });
           params.loading && commit("SET_IS_LOADING", false);
           return res;
+        } else {
+          params.loading && commit("SET_IS_LOADING", false);
         }
       } catch (error) {
         params.loading && commit("SET_IS_LOADING", false);

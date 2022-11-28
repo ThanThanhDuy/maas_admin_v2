@@ -77,6 +77,8 @@ export default {
         if (res && res.StatusCode === 200) {
           commit("SET_REPORT", res);
           commit("SET_LOADING", false);
+        } else {
+          commit("SET_LOADING", false);
         }
       } catch (error) {
         console.log(error);
@@ -91,6 +93,8 @@ export default {
           commit("SET_DATA_REPORT", res);
           commit("SET_LOADING_DATA_REPORT", false);
           return res;
+        } else {
+          commit("SET_LOADING_DATA_REPORT", false);
         }
       } catch (error) {
         console.log(error);

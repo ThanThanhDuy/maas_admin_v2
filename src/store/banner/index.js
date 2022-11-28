@@ -27,12 +27,14 @@ export default {
     },
   },
   actions: {
-    async getListBanner({ commit }) {
+    async getListBanner({ commit }, title) {
       commit("SET_LOADING", true);
       try {
-        const res = await bannerService.getListBanner();
+        const res = await bannerService.getListBanner(title);
         if (res && res.StatusCode === 200) {
           commit("SET_LIST_BANNER", res.Data);
+          commit("SET_LOADING", false);
+        } else {
           commit("SET_LOADING", false);
         }
       } catch (error) {

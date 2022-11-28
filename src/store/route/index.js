@@ -78,7 +78,8 @@ export default {
         const res = await routeService.getAllRoute();
         if (res && res.StatusCode === 200) {
           commit("SET_ROUTE", res.Data);
-
+          commit("SET_LOADING", false);
+        } else {
           commit("SET_LOADING", false);
         }
       } catch (error) {

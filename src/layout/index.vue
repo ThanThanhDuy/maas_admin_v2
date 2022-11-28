@@ -84,12 +84,12 @@ export default {
           path: "/help",
           icon: "customer-service",
         },
-        {
-          key: "6",
-          name: "Messages",
-          path: "/messages",
-          icon: "message",
-        },
+        // {
+        //   key: "6",
+        //   name: "Messages",
+        //   path: "/messages",
+        //   icon: "message",
+        // },
         {
           key: "7",
           name: "Banners",
