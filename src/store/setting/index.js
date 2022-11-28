@@ -35,6 +35,8 @@ export default {
           console.log(res.Data);
           commit("SET_LIST_SETTING", res.Data);
           commit("SET_IS_LOADING", false);
+        } else {
+          commit("SET_IS_LOADING", false);
         }
       } catch (error) {
         commit("SET_IS_LOADING", false);

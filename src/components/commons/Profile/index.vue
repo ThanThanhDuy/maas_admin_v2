@@ -215,7 +215,7 @@
                 :key="veh.Id"
                 v-for="veh in listVehicle"
               >
-                {{ veh.Id }}{{ veh.Name }}
+                {{ veh?.Name?.replace("-", " ") }}
               </a-select-option>
             </a-select>
           </a-form-item>

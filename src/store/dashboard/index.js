@@ -35,6 +35,8 @@ export default {
           commit("SET_DASHBOARD", res.Data);
           commit("SET_IS_LOADING", false);
           return res.Data;
+        } else {
+          commit("SET_LOADING", false);
         }
       } catch (error) {
         commit("SET_IS_LOADING", false);

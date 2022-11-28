@@ -175,7 +175,7 @@
         <a-button
           slot="tabBarExtraContent"
           type="primary"
-          icon="save"
+          :icon="loadingUpdate ? 'loading' : 'save'"
           @click="handleUpdateDriver"
         >
           Save
@@ -233,6 +233,7 @@ export default {
       fileVehicleRegistrationFrontSideImage: null,
       fileVehicleRegistrationBackSideImage: null,
       listVehicle: [],
+      loadingUpdate: false,
     };
   },
   computed: {
@@ -282,6 +283,7 @@ export default {
     },
     // eslint-disable-next-line
     async handleUpdateUser() {
+      this.loadingUpdate = true;
       let formData = new FormData();
       formData.append(
         "PhoneNumber",
@@ -352,6 +354,7 @@ export default {
       } else {
         notification(this, "error", "Update Driver Fail", "");
       }
+      this.loadingUpdate = false;
     },
     checkEmpty(value) {
       return value === "" || value === null || value === undefined;

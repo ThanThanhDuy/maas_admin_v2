@@ -4,37 +4,37 @@ export const HEADER_ROUTE = [
     key: "code",
     title: "Code",
     width: "25%",
-    sorter: (a, b) => a.code - b.code,
+    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "From",
     dataIndex: "from",
     key: "from",
     width: "25%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "To",
     dataIndex: "to",
     key: "to",
     width: "25%",
-    sorter: (a, b) => {
-      if (a.to < b.to) {
-        return -1;
-      }
-      if (a.to > b.to) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.to < b.to) {
+    //     return -1;
+    //   }
+    //   if (a.to > b.to) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "Status",
@@ -51,7 +51,7 @@ export const HEADER_ROUTE = [
     scopedSlots: { customRender: "distance" },
     width: "8.2%",
     align: "center",
-    sorter: (a, b) => a.distance - b.distance,
+    // sorter: (a, b) => a.distance - b.distance,
   },
   {
     title: "Station",
@@ -59,7 +59,7 @@ export const HEADER_ROUTE = [
     dataIndex: "station",
     width: "8.2%",
     align: "center",
-    sorter: (a, b) => a.station - b.station,
+    // sorter: (a, b) => a.station - b.station,
   },
 ];
 
@@ -69,22 +69,22 @@ export const HEADER_DRIVER = [
     key: "Code",
     title: "Code",
     width: "20%",
-    sorter: (a, b) => a.code - b.code,
+    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Name",
     dataIndex: "Name",
     key: "Name",
     width: "15%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "Phone",
@@ -92,18 +92,19 @@ export const HEADER_DRIVER = [
     key: "PhoneNumber",
     width: "10%",
   },
-  // {
-  //   title: "Email",
-  //   key: "Email",
-  //   dataIndex: "Email",
-  //   width: "20%",
-  // },
-  // {
-  //   title: "Birthdate",
-  //   key: "Birthdate",
-  //   dataIndex: "Birthdate",
-  //   width: "10%",
-  // },
+  {
+    title: "Email",
+    key: "Gmail",
+    dataIndex: "Gmail",
+    width: "20%",
+  },
+  {
+    title: "Birthdate",
+    key: "DateOfBirth",
+    dataIndex: "DateOfBirth",
+    scopedSlots: { customRender: "DateOfBirth" },
+    width: "10%",
+  },
   // {
   //   title: "Status",
   //   key: "StatusDriver",
@@ -127,22 +128,22 @@ export const HEADER_PROBLEM = [
     dataIndex: "Title",
     key: "Title",
     width: "15%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "User Code",
     dataIndex: "UserCode",
     key: "UserCode",
     width: "20%",
-    sorter: (a, b) => a.code - b.code,
+    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "User Name",
@@ -152,8 +153,9 @@ export const HEADER_PROBLEM = [
   },
   {
     title: "Date",
-    key: "DateReport",
-    dataIndex: "DateReport",
+    key: "DateTime",
+    dataIndex: "DateTime",
+    scopedSlots: { customRender: "DateTime" },
     width: "10%",
   },
   {
@@ -172,37 +174,37 @@ export const HEADER_STATION = [
     key: "Code",
     title: "Code",
     width: "20%",
-    sorter: (a, b) => a.code - b.code,
+    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Name",
     dataIndex: "Name",
     key: "Name",
     width: "15%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "Address",
     key: "Address",
     dataIndex: "Address",
     width: "25%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "Latitude",
@@ -224,22 +226,22 @@ export const HEADER_BANNER = [
     key: "Priority",
     title: "Priority",
     width: "5%",
-    sorter: (a, b) => a.code - b.code,
+    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Title",
     dataIndex: "Title",
     key: "Title",
     width: "20%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
   {
     title: "Content",
@@ -247,15 +249,15 @@ export const HEADER_BANNER = [
     dataIndex: "Content",
     scopedSlots: { customRender: "Content" },
     width: "35%",
-    sorter: (a, b) => {
-      if (a.from < b.from) {
-        return -1;
-      }
-      if (a.from > b.from) {
-        return 1;
-      }
-      return 0;
-    },
+    // sorter: (a, b) => {
+    //   if (a.from < b.from) {
+    //     return -1;
+    //   }
+    //   if (a.from > b.from) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // },
   },
 ];
 
@@ -276,6 +278,7 @@ export const HEADER_PROMOTION = [
     title: "Discount Percentage",
     key: "DiscountPercentage",
     dataIndex: "DiscountPercentage",
+    scopedSlots: { customRender: "DiscountPercentage" },
     width: "10%",
   },
   {

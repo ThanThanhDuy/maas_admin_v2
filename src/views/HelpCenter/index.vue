@@ -111,9 +111,9 @@ export default {
       pageSize: this.pageSize,
     });
     this.pagi = {
-      total: res.Data.TotalItemsCount,
-      current: res.Data.Page,
-      pageSize: res.Data.PageSize,
+      total: res?.Data.TotalItemsCount,
+      current: res?.Data.Page,
+      pageSize: res?.Data.PageSize,
     };
   },
 };

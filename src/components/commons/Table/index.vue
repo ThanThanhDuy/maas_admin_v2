@@ -56,6 +56,19 @@
         }}</a-tag>
       </span>
     </template>
+    <template slot="DiscountPercentage" slot-scope="DiscountPercentage">
+      <span> {{ DiscountPercentage * 100 }}% </span>
+    </template>
+    <template slot="DateOfBirth" slot-scope="DateOfBirth">
+      <span>
+        {{ DateOfBirth ? moment(DateOfBirth).format("DD-MM-YYYY") : "" }}
+      </span>
+    </template>
+    <template slot="DateTime" slot-scope="DateTime">
+      <span>
+        {{ DateTime ? moment(DateTime).format("DD-MM-YYYY") : "" }}
+      </span>
+    </template>
   </a-table>
 </template>
 
@@ -67,6 +80,7 @@ import {
   STATUS_REPORT,
 } from "@/constants/status";
 import { TYPE_PROMOTION } from "@/constants/promotion";
+import moment from "moment";
 
 export default {
   name: "TableVue",
@@ -76,6 +90,7 @@ export default {
       STATUS_REPORT,
       STATUS_PROMOTION,
       TYPE_PROMOTION,
+      moment,
     };
   },
   props: {

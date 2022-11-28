@@ -39,6 +39,8 @@ export default {
         if (res && res.StatusCode === 200) {
           commit("SET_LIST_PROMOTION", res.Data);
           commit("SET_LOADING", false);
+        } else {
+          commit("SET_LOADING", false);
         }
       } catch (error) {
         console.log(

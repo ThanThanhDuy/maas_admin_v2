@@ -50,7 +50,10 @@
               <p class="label_require ant-form-item-label">Address</p>
             </div>
             <div class="containerAddress_station">
-              <a-form-item>
+              <a-form-item
+                :validate-status="isValidProvince ? 'validating' : 'error'"
+                :help="messageProvince"
+              >
                 <a-select
                   show-search
                   placeholder="Select a Province"
@@ -79,7 +82,10 @@
                   </a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item>
+              <a-form-item
+                :validate-status="isValidDistrict ? 'validating' : 'error'"
+                :help="messageDistrict"
+              >
                 <a-select
                   show-search
                   placeholder="Select a District"
@@ -108,7 +114,10 @@
                   </a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item>
+              <a-form-item
+                :validate-status="isValidWard ? 'validating' : 'error'"
+                :help="messageWard"
+              >
                 <a-select
                   show-search
                   placeholder="Select a Ward"
@@ -291,6 +300,12 @@ export default {
       total: 0,
       pagi: {},
       valueSearch: "",
+      isValidProvince: true,
+      isValidDistrict: true,
+      isValidWard: true,
+      messageProvince: "",
+      messageDistrict: "",
+      messageWard: "",
     };
   },
   computed: {
@@ -420,6 +435,8 @@ export default {
       this.textDistrict = this.districts.find(
         item => item.code === value
       ).name_with_type;
+      this.isValidDistrict = true;
+      this.messageDistrict = "";
       this.textWard = undefined;
       this.form.setFieldsValue({
         Ward: undefined,
@@ -436,6 +453,8 @@ export default {
       this.textWard = this.wards.find(
         item => item.code === value
       ).name_with_type;
+      this.isValidWard = true;
+      this.messageWard = "";
     },
     filterOptionWard(input, option) {
       return (
@@ -446,57 +465,97 @@ export default {
     },
     handleSubmit(e) {
       e.preventDefault();
+      if (!this.textProvince) {
+        this.isValidProvince = false;
+        this.messageProvince = "Province is required";
+      } else {
+        this.isValidProvince = true;
+        this.messageProvince = "";
+      }
+      if (!this.textDistrict) {
+        this.isValidDistrict = false;
+        this.messageDistrict = "District is required";
+      } else {
+        this.isValidDistrict = true;
+        this.messageDistrict = "";
+      }
+      if (!this.textWard) {
+        this.isValidWard = false;
+        this.messageWard = "Ward is required";
+      } else {
+        this.isValidWard = true;
+        this.messageWard = "";
+      }
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.$confirm({
-            okText: "Yes",
-            cancelText: "No",
-            title: `Do you want to ${
-              this.isCreate ? "submit" : "save change"
-            }?`,
-            content: "",
-            onOk: async () => {
-              // this.visible = false;
-
-              let params = {
-                ...values,
-                Province: this.textProvince,
-                District: this.textDistrict,
-                Ward: this.textWard,
-                Street: this.street,
-                StationStatus: Number(values.Status),
-              };
-              let res = null;
-              if (this.isCreate) {
-                res = await stationService.createStation(params);
-              } else {
-                res = await stationService.updateStation({
-                  ...params,
-                  Code: this.recordSelected.Code,
-                  Address: `${this.street}, ${this.textWard}, ${this.textDistrict}, ${this.textProvince}`,
-                });
-              }
-              if (res && res.StatusCode === 200) {
-                notification(
-                  this,
-                  "success",
-                  `${this.isCreate ? "Create" : "Update"} station successfully`,
-                  ""
-                );
-                this.resetField();
+          if (
+            this.isValidProvince &&
+            this.isValidDistrict &&
+            this.isValidWard &&
+            this.handleBlurNameStation() &&
+            this.handleBlurStreet() &&
+            this.handleBlurLongitude() &&
+            this.handleBlurLatitude()
+          ) {
+            this.$confirm({
+              okText: "Yes",
+              cancelText: "No",
+              title: `Do you want to ${
+                this.isCreate ? "submit" : "save change"
+              }?`,
+              content: "",
+              onOk: async () => {
                 this.visible = false;
-                this.isCreate = false;
-                // this.getAllStation();
-                this.getStationPaging({
-                  search: this.valueSearch,
-                  page: this.pagi.current,
-                  pageSize: this.pagi.pageSize,
-                  loading: true,
-                });
-              }
-            },
-            onCancel() {},
-          });
+                let params = {
+                  ...values,
+                  Province: this.textProvince,
+                  District: this.textDistrict,
+                  Ward: this.textWard,
+                  Street: this.street,
+                  StationStatus: Number(values.Status),
+                };
+                console.log(params);
+                let res = null;
+                if (this.isCreate) {
+                  res = await stationService.createStation(params);
+                } else {
+                  res = await stationService.updateStation({
+                    ...params,
+                    Code: this.recordSelected.Code,
+                    Address: `${this.street}, ${this.textWard}, ${this.textDistrict}, ${this.textProvince}`,
+                  });
+                }
+                if (res && res.StatusCode === 200) {
+                  notification(
+                    this,
+                    "success",
+                    `${
+                      this.isCreate ? "Create" : "Update"
+                    } station successfully`,
+                    ""
+                  );
+                  this.resetField();
+                  this.visible = false;
+                  this.isCreate = false;
+                  // this.getAllStation();
+                  this.getStationPaging({
+                    search: this.valueSearch,
+                    page: this.pagi.current,
+                    pageSize: this.pagi.pageSize,
+                    loading: true,
+                  });
+                }
+              },
+              onCancel() {},
+            });
+          } else {
+            notification(
+              this,
+              "error",
+              `Please fill in all required fields`,
+              ""
+            );
+          }
         }
       });
     },
@@ -513,8 +572,10 @@ export default {
               errors: [new Error("Please input Latitude right format!")],
             },
           });
+          return false;
         }
       }
+      return true;
     },
     handleBlurLongitude() {
       const lot = this.form.getFieldsValue(["Longitude"]);
@@ -526,8 +587,10 @@ export default {
               errors: [new Error("Please input Longitude right format!")],
             },
           });
+          return false;
         }
       }
+      return true;
     },
     handleBlurStreet() {
       const street = this.form.getFieldsValue(["Street"]);
@@ -543,8 +606,10 @@ export default {
               ],
             },
           });
+          return false;
         }
       }
+      return true;
     },
     handleBlurNameStation() {
       const nameStation = this.form.getFieldsValue(["Name"]);
@@ -560,8 +625,10 @@ export default {
               ],
             },
           });
+          return false;
         }
       }
+      return true;
     },
     rowSelect(record) {
       this.visible = true;

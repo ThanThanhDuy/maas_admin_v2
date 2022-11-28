@@ -217,7 +217,7 @@
             <a-col :span="6">
               <a-form-item label="Payment method">
                 <a-select
-                  @change="() => handleBlur('Type')"
+                  @change="() => handleBlur('PaymentMethods')"
                   style="width: 100%"
                   v-decorator="[
                     'PaymentMethods',
@@ -243,7 +243,7 @@
             <a-col :span="6">
               <a-form-item label="Vehicle Type">
                 <a-select
-                  @change="() => handleBlur('Type')"
+                  @change="() => handleBlur('VehicleTypes')"
                   style="width: 100%"
                   v-decorator="[
                     'VehicleTypes',
