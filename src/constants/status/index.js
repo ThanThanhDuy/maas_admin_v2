@@ -99,3 +99,14 @@ export const STATUS_PROMOTION = {
     status: "Active",
   },
 };
+
+export const STATUS_BANNER = {
+  false: {
+    color: "red",
+    status: "Inactive",
+  },
+  true: {
+    color: "green",
+    status: "Active",
+  },
+};

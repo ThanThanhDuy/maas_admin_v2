@@ -4,37 +4,18 @@ export const HEADER_ROUTE = [
     key: "code",
     title: "Code",
     width: "25%",
-    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "From",
     dataIndex: "from",
     key: "from",
     width: "25%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "To",
     dataIndex: "to",
     key: "to",
     width: "25%",
-    // sorter: (a, b) => {
-    //   if (a.to < b.to) {
-    //     return -1;
-    //   }
-    //   if (a.to > b.to) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "Status",
@@ -51,7 +32,6 @@ export const HEADER_ROUTE = [
     scopedSlots: { customRender: "distance" },
     width: "8.2%",
     align: "center",
-    // sorter: (a, b) => a.distance - b.distance,
   },
   {
     title: "Station",
@@ -59,7 +39,6 @@ export const HEADER_ROUTE = [
     dataIndex: "station",
     width: "8.2%",
     align: "center",
-    // sorter: (a, b) => a.station - b.station,
   },
 ];
 
@@ -69,22 +48,12 @@ export const HEADER_DRIVER = [
     key: "Code",
     title: "Code",
     width: "20%",
-    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Name",
     dataIndex: "Name",
     key: "Name",
     width: "15%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "Phone",
@@ -105,14 +74,6 @@ export const HEADER_DRIVER = [
     scopedSlots: { customRender: "DateOfBirth" },
     width: "10%",
   },
-  // {
-  //   title: "Status",
-  //   key: "StatusDriver",
-  //   dataIndex: "StatusDriver",
-  //   scopedSlots: { customRender: "StatusDriver" },
-  //   width: "10%",
-  //   align: "left",
-  // },
 ];
 
 export const HEADER_PROBLEM = [
@@ -128,22 +89,12 @@ export const HEADER_PROBLEM = [
     dataIndex: "Title",
     key: "Title",
     width: "15%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "User Code",
     dataIndex: "UserCode",
     key: "UserCode",
     width: "20%",
-    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "User Name",
@@ -174,37 +125,18 @@ export const HEADER_STATION = [
     key: "Code",
     title: "Code",
     width: "20%",
-    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Name",
     dataIndex: "Name",
     key: "Name",
     width: "15%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "Address",
     key: "Address",
     dataIndex: "Address",
-    width: "25%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
+    width: "20%",
   },
   {
     title: "Latitude",
@@ -218,6 +150,14 @@ export const HEADER_STATION = [
     dataIndex: "Longitude",
     width: "10%",
   },
+  {
+    title: "Status",
+    key: "Status",
+    dataIndex: "Status",
+    scopedSlots: { customRender: "Status" },
+    width: "5%",
+    align: "center",
+  },
 ];
 
 export const HEADER_BANNER = [
@@ -226,22 +166,12 @@ export const HEADER_BANNER = [
     key: "Priority",
     title: "Priority",
     width: "5%",
-    // sorter: (a, b) => a.code - b.code,
   },
   {
     title: "Title",
     dataIndex: "Title",
     key: "Title",
     width: "20%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
   },
   {
     title: "Content",
@@ -249,15 +179,13 @@ export const HEADER_BANNER = [
     dataIndex: "Content",
     scopedSlots: { customRender: "Content" },
     width: "35%",
-    // sorter: (a, b) => {
-    //   if (a.from < b.from) {
-    //     return -1;
-    //   }
-    //   if (a.from > b.from) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // },
+  },
+  {
+    title: "Status",
+    key: "Active",
+    dataIndex: "Active",
+    scopedSlots: { customRender: "Active" },
+    width: "10%",
   },
 ];
 

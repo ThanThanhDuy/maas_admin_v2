@@ -22,8 +22,8 @@ class BannerApi {
   }
 
   async deleteBanner(params) {
-    const url = `${this.PREFIX}`;
-    return await axiosClient.delete(url, params);
+    const url = `admins/banner`;
+    return await axiosClient.delete(url, { data: params });
   }
 }
 
