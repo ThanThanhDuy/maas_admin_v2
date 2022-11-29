@@ -505,7 +505,7 @@ export default {
               }?`,
               content: "",
               onOk: async () => {
-                this.visible = false;
+                // this.visible = false;
                 let params = {
                   ...values,
                   Province: this.textProvince,
@@ -634,6 +634,7 @@ export default {
       this.visible = true;
       this.isCreate = false;
       let address = record.Address.split(", ");
+      console.log(address);
       this.form.getFieldDecorator("Name", {
         initialValue: record.Name,
       });

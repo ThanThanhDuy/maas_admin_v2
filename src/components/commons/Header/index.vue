@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import userService from "@/services/user";
 import { auth } from "@/utils/firebase";
 import { notification } from "@/utils/notification";
 import { signOut } from "@firebase/auth";
@@ -69,14 +70,18 @@ export default {
       signOut(auth)
         .then(() => {
           this.icon = "loading";
-          setTimeout(() => {
+          const res = userService.logout();
+          return res;
+        })
+        .then(res => {
+          if (res && res.StatusCode === 200) {
             localStorage.removeItem("USER");
             notification(this, "success", "Logout Successfully", "");
             this.icon = "logout";
             this.$router.push({
               name: "Login",
             });
-          }, 1000);
+          }
         })
         .catch(error => {
           console.log(

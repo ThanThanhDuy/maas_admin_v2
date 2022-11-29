@@ -27,7 +27,7 @@
     >
       <div>
         <a-form :form="form" @submit="handleSubmit">
-          <a-row>
+          <a-row style="margin-top: 15px">
             <a-col :span="24">
               <a-form-item label="Title">
                 <a-input
@@ -47,6 +47,8 @@
                 />
               </a-form-item>
             </a-col>
+          </a-row>
+          <a-row style="margin-top: 15px">
             <a-col :span="24">
               <a-form-item label="Content">
                 <a-textarea
@@ -67,7 +69,7 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row :gutter="16">
+          <a-row :gutter="16" style="margin-top: 15px">
             <a-col :span="6">
               <a-form-item label="Priority">
                 <a-input-number
@@ -87,30 +89,29 @@
                 />
               </a-form-item>
             </a-col>
-            <a-col v-if="!isCreate" :span="6">
-              <a-form-item label="Status">
-                <a-select
+            <a-col v-if="!isCreate" :span="12">
+              <a-form-item label="Status" v-if="!isCreate" :span="6">
+                <a-radio-group
                   @change="() => handleBlur('Active')"
-                  style="width: 100%"
                   v-decorator="[
                     'Active',
                     {
                       rules: [
                         {
-                          required: false,
+                          required: true,
                           message: 'Please select Status!',
                         },
                       ],
                     },
                   ]"
                 >
-                  <a-select-option value="0">Inactive</a-select-option>
-                  <a-select-option value="1">Active</a-select-option>
-                </a-select>
-              </a-form-item></a-col
-            >
+                  <a-radio value="true">Active</a-radio>
+                  <a-radio value="false">Inactive</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
           </a-row>
-          <a-row>
+          <a-row style="margin-top: 15px">
             <a-form-item
               label="Image"
               :validate-status="isFileValid ? 'validating' : 'error'"
@@ -160,6 +161,8 @@ import TableVue from "@/components/commons/Table";
 import { HEADER_BANNER } from "@/constants/table/header";
 import { mapActions, mapGetters } from "vuex";
 import { REGEX } from "@/constants/regex";
+import bannerService from "@/services/banner";
+import { notification } from "@/utils/notification";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -224,8 +227,10 @@ export default {
       this.form.getFieldDecorator("Priority", {
         initialValue: this.bannerSelected.Priority,
       });
+      this.form.getFieldDecorator("Active", {
+        initialValue: this.bannerSelected.Active?.toString(),
+      });
       this.imageUrl = this.bannerSelected.FilePath;
-      // console.log(record);
     },
     handleCancel() {
       this.visible = false;
@@ -247,15 +252,78 @@ export default {
           ) {
             if (this.isCreate) {
               if (this.file) {
-                console.log("Received values of form: ", values);
-                console.log("file", this.file);
+                this.$confirm({
+                  okText: "Yes",
+                  cancelText: "No",
+                  title: `Do you want to ${
+                    this.isCreate ? "submit" : "save change"
+                  }?`,
+                  content: "",
+                  onOk: async () => {
+                    const formData = new FormData();
+                    formData.append("File", this.file);
+                    formData.append("Title", values.Title);
+                    formData.append("Content", values.Content);
+                    formData.append("Priority", values.Priority);
+                    const res = await bannerService.createBanner(formData);
+                    if (res && res.StatusCode === 200) {
+                      notification(
+                        this,
+                        "success",
+                        `${
+                          this.isCreate ? "Create" : "Update"
+                        } station successfully`,
+                        ""
+                      );
+                      this.handleReset();
+                      this.visible = false;
+                      this.isCreate = false;
+                      this.getListBanner(this.search);
+                    }
+                  },
+                  onCancel() {},
+                });
               } else {
                 this.isFileValid = false;
                 this.messageFileValid = "Please select file!";
+                return;
               }
             } else {
-              console.log("Received values of form: ", values);
-              console.log("file", this.file);
+              this.$confirm({
+                okText: "Yes",
+                cancelText: "No",
+                title: `Do you want to ${
+                  this.isCreate ? "submit" : "save change"
+                }?`,
+                content: "",
+                onOk: async () => {
+                  const formData = new FormData();
+                  formData.append("Id", this.bannerSelected.Id);
+                  formData.append("Title", values.Title);
+                  formData.append("Content", values.Content);
+                  formData.append("Priority", values.Priority);
+                  formData.append("Active", values.Active);
+                  if (this.file) {
+                    formData.append("File", this.file);
+                  }
+                  const res = await bannerService.udpateBanner(formData);
+                  if (res && res.StatusCode === 200) {
+                    notification(
+                      this,
+                      "success",
+                      `${
+                        this.isCreate ? "Create" : "Update"
+                      } station successfully`,
+                      ""
+                    );
+                    this.handleReset();
+                    this.visible = false;
+                    this.isCreate = false;
+                    this.getListBanner(this.search);
+                  }
+                },
+                onCancel() {},
+              });
             }
           } else {
             console.log("loi luon roi");
@@ -277,8 +345,9 @@ export default {
         initialValue: "",
       });
       this.form.getFieldDecorator("Active", {
-        initialValue: "",
+        initialValue: "true",
       });
+
       this.imageUrl = "";
       this.form.resetFields();
     },
@@ -356,6 +425,29 @@ export default {
       this.file = file;
       this.isFileValid = true;
       this.messageFileValid = "";
+    },
+    handleDelete() {
+      if (this.bannerSelected.Id) {
+        this.$confirm({
+          okText: "Yes",
+          cancelText: "No",
+          title: `Do you want to delete?`,
+          content: "",
+          onOk: async () => {
+            const res = await bannerService.deleteBanner(
+              this.bannerSelected.Id
+            );
+            if (res && res.StatusCode === 200) {
+              notification(this, "success", `Delete station successfully`, "");
+              this.handleReset();
+              this.visible = false;
+              this.isCreate = false;
+              this.getListBanner(this.search);
+            }
+          },
+          onCancel() {},
+        });
+      }
     },
   },
   mounted() {

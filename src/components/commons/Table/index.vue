@@ -69,6 +69,20 @@
         {{ DateTime ? moment(DateTime).format("DD-MM-YYYY") : "" }}
       </span>
     </template>
+    <template slot="Active" slot-scope="Active">
+      <span>
+        <a-tag :color="STATUS_BANNER[Active].color">{{
+          STATUS_BANNER[Active].status
+        }}</a-tag>
+      </span>
+    </template>
+    <template slot="Status" slot-scope="Status">
+      <span>
+        <a-tag :color="Status === 1 ? 'green' : 'volcano'">{{
+          Status === 1 ? "Active" : "Inactive"
+        }}</a-tag>
+      </span>
+    </template>
   </a-table>
 </template>
 
@@ -78,6 +92,7 @@ import {
   STATUS_DRIVER,
   STATUS_PROMOTION,
   STATUS_REPORT,
+  STATUS_BANNER,
 } from "@/constants/status";
 import { TYPE_PROMOTION } from "@/constants/promotion";
 import moment from "moment";
@@ -91,6 +106,7 @@ export default {
       STATUS_PROMOTION,
       TYPE_PROMOTION,
       moment,
+      STATUS_BANNER,
     };
   },
   props: {
