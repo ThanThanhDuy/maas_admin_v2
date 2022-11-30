@@ -213,6 +213,7 @@ export const HEADER_PROMOTION = [
     title: "Max Decrease",
     key: "MaxDecrease",
     dataIndex: "MaxDecrease",
+    scopedSlots: { customRender: "MaxDecrease" },
     width: "10%",
   },
   {

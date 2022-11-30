@@ -20,6 +20,11 @@ class PromotiontApi {
     const url = `admins/promotions/${id}`;
     return await axiosClientFormData.put(url, params);
   }
+
+  async deletePromotion(params) {
+    const url = `${this.PREFIX}`;
+    return await axiosClient.delete(url, { data: params });
+  }
 }
 
 const promotiontApi = new PromotiontApi();

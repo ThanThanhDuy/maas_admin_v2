@@ -14,7 +14,7 @@
         :isDisabled="listStationProps.length >= 2 ? false : true"
       />
     </div>
-    <div class="containerFormRoute" v-if="listStationProps.length > 0">
+    <div class="containerFormRoute" v-if="!isLoading">
       <div
         class="containerFormRoute__box"
         v-for="(station, index) in listStationProps"
@@ -202,6 +202,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -322,7 +326,7 @@ export default {
 .containerFormRoute {
   margin-top: 75px;
   margin-right: 16px;
-  max-height: calc(100vh - 64px - 16px - 40px - 100px);
+  max-height: calc(100vh - 64px - 16px - 40px - 100px - 65px);
   overflow-y: auto;
   &__box {
     display: flex;

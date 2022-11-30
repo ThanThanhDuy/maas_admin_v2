@@ -438,11 +438,13 @@ export default {
               this.bannerSelected.Id
             );
             if (res && res.StatusCode === 200) {
-              notification(this, "success", `Delete station successfully`, "");
+              notification(this, "success", `Delete banner successfully`, "");
               this.handleReset();
               this.visible = false;
               this.isCreate = false;
               this.getListBanner(this.search);
+            } else {
+              notification(this, "error", `Delete banner failed`, "");
             }
           },
           onCancel() {},
