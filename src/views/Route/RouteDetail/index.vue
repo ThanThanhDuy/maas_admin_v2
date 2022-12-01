@@ -17,6 +17,7 @@
         </a-row>
       </div>
       <FromVue
+        :isLoading="getLoading"
         :getStation="getStation"
         :handleSave="handleSave"
         :iconSave="iconSave"
@@ -81,6 +82,7 @@ export default {
       getStation: "station/listStation",
       getRouteByCode: "route/getRouteByCode",
       getListStationProps: "route/getListStationProps",
+      getLoading: "route/getLoading",
     }),
     google: gmapApi,
   },
@@ -144,9 +146,14 @@ export default {
               notification(this, "success", "Update route successfully", "");
             }, 1000);
           } else {
+            this.getAllStation();
+            this.funcGetRouteByCode({
+              code: this.$route.params.code,
+              isLoading: false,
+            });
             setTimeout(() => {
               // this.iconSave = "save";
-              notification(this, "error", "Update route failed", "");
+              notification(this, "error", "Update route failed", res.Message);
             }, 1000);
           }
         },
@@ -256,7 +263,10 @@ export default {
   async mounted() {
     this.setListStationProps([]);
     this.getAllStation();
-    const res = await this.funcGetRouteByCode(this.$route.params.code);
+    const res = await this.funcGetRouteByCode({
+      code: this.$route.params.code,
+      isLoading: true,
+    });
     this.nameRoute = res.Name;
   },
 };

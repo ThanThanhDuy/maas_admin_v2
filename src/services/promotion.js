@@ -2,9 +2,12 @@ import promotionApi from "@/apis/promotion";
 
 class PromotionService {
   async getPromotion(search) {
-    const params = {
-      SearchValue: search,
-    };
+    let params;
+    if (search) {
+      params = {
+        SearchValue: search,
+      };
+    }
     try {
       var response = await promotionApi.getPromotion(params);
     } catch (error) {
@@ -25,6 +28,18 @@ class PromotionService {
   async updatePromotion(params, id) {
     try {
       var response = await promotionApi.updatePromotion(params, id);
+    } catch (error) {
+      return error;
+    }
+    return response;
+  }
+
+  async deletePromotion(id) {
+    let params = {
+      Ids: [id],
+    };
+    try {
+      var response = await promotionApi.deletePromotion(params);
     } catch (error) {
       return error;
     }

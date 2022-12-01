@@ -121,22 +121,22 @@ export default {
         );
       }
     },
-    async getRouteByCode({ commit }, code) {
-      commit("SET_LOADING", true);
+    async getRouteByCode({ commit }, data) {
       try {
+        data.isLoading && commit("SET_LOADING", true);
         const res = await routeService.getAllRoute();
         if (res && res.StatusCode === 200) {
-          const route = res.Data.find(item => item.Code === code);
+          const route = res.Data.find(item => item.Code === data.code);
           // console.log(route);
           if (route) {
             commit("SET_LIST_STATION_PROPS", route.Stations);
             commit("SET_ROUTE_BY_CODE", route);
-            commit("SET_LOADING", false);
+            data.isLoading && commit("SET_LOADING", false);
             return route;
           }
         }
       } catch (error) {
-        commit("SET_LOADING", false);
+        data.isLoading && commit("SET_LOADING", false);
         console.log(
           "🚀 ~ file: index.js ~ line 125 ~ getAllRoute ~ error",
           error

@@ -7,6 +7,7 @@
       :iconHeader="iconHeader"
       :placeholder="placeholder"
       :onClickButton="onClickButton"
+      :searchValue="searchValue"
     />
     <div style="margin-top: 40px">
       <TableVue
@@ -328,7 +329,30 @@
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="24">
+            <a-col v-if="!isCreate" :span="10">
+              <a-form-item label="Status" v-if="!isCreate">
+                <a-radio-group
+                  @change="() => handleBlur('Status')"
+                  v-decorator="[
+                    'Status',
+                    {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please select Status!',
+                        },
+                      ],
+                    },
+                  ]"
+                >
+                  <a-radio :value="1">Active</a-radio>
+                  <a-radio :value="0">Inactive</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+            <!-- </a-row>
+          <a-row> -->
+            <a-col :span="12">
               <a-form-item label="Image">
                 <div class="promotion">
                   <a-upload
@@ -417,6 +441,7 @@ export default {
       imageUrl: "",
       loading: false,
       file: null,
+      search: "",
     };
   },
   computed: {
@@ -489,6 +514,10 @@ export default {
           : -1,
       });
       this.imageUrl = this.proSelected.FilePath;
+      console.log(this.proSelected.Status);
+      this.form.getFieldDecorator("Status", {
+        initialValue: this.proSelected.Status,
+      });
     },
     handleCancel() {
       this.visible = false;
@@ -521,7 +550,8 @@ export default {
             this.handleBlur("MinTickets") &&
             this.handleBlur("PaymentMethods") &&
             this.handleBlur("VehicleTypes") &&
-            this.handleBlur("Type")
+            this.handleBlur("Type") &&
+            this.handleBlur("Status")
           ) {
             this.$confirm({
               title: `Do you want to ${
@@ -584,6 +614,9 @@ export default {
                   this.proSelected.PromotionCondition.VehicleTypes
                 );
                 formData.append("File", this.file ? this.file : "");
+                if (!this.isCreate) {
+                  formData.append("Status", this.proSelected.Status);
+                }
                 let res;
                 if (this.isCreate) {
                   res = await promotionService.createPromotion(formData);
@@ -609,7 +642,7 @@ export default {
                   this.ValidFrom = null;
                   this.ValidUntil = null;
                   this.imageUrl = "";
-                  this.getPromotion();
+                  this.getPromotion(this.search);
                 } else {
                   notification(
                     this,
@@ -630,7 +663,35 @@ export default {
       });
     },
     handleDelete() {
-      console.log("delete");
+      if (this.proSelected.Id) {
+        this.$confirm({
+          okText: "Yes",
+          cancelText: "No",
+          title: `Do you want to delete?`,
+          content: "",
+          onOk: async () => {
+            const res = await promotionService.deletePromotion(
+              this.proSelected.Id
+            );
+            if (res && res.StatusCode === 200) {
+              this.visible = false;
+              this.handleReset();
+              this.proSelected = {};
+              this.isCreate = false;
+              this.getPromotion(this.search);
+              notification(
+                this,
+                "success",
+                `Delete promotion successfully`,
+                ""
+              );
+            } else {
+              notification(this, "error", `Delete promotion fail`, res.Message);
+            }
+          },
+          onCancel() {},
+        });
+      }
     },
     handleReset() {
       this.form.getFieldDecorator("Code", {
@@ -668,6 +729,9 @@ export default {
       });
       this.form.getFieldDecorator("VehicleTypes", {
         initialValue: -1,
+      });
+      this.form.getFieldDecorator("Status", {
+        initialValue: 0,
       });
 
       this.form.resetFields();
@@ -1009,14 +1073,21 @@ export default {
           this.loading = false;
         });
         return true;
+      } else if (string === "Status") {
+        this.proSelected[string] = value[string];
+        return true;
       }
     },
     uploadfiles({ file }) {
       this.file = file;
     },
+    searchValue(value) {
+      this.search = value;
+      this.getPromotion(value);
+    },
   },
   mounted() {
-    this.getPromotion();
+    this.getPromotion(this.search);
   },
 };
 </script>

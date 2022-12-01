@@ -83,6 +83,9 @@
         }}</a-tag>
       </span>
     </template>
+    <template slot="MaxDecrease" slot-scope="MaxDecrease">
+      <span>{{ numberWithCommas(MaxDecrease) }}</span>
+    </template>
   </a-table>
 </template>
 
@@ -153,6 +156,9 @@ export default {
     },
     handleTableChangeTable(pg) {
       this.handleTableChange(pg);
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
   },
 };
