@@ -3,9 +3,8 @@ import axios from "axios";
 import queryString from "query-string";
 
 const axiosClient = axios.create({
-  baseURL: "https://vigo-application.herokuapp.com/api/v1",
-  // baseURL:
-  // "http://vigo-api.eba-2vp2ppm2.ap-southeast-1.elasticbeanstalk.com/api/v1",
+  baseURL:
+    "http://vigo-api.eba-2vp2ppm2.ap-southeast-1.elasticbeanstalk.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -28,7 +27,7 @@ axiosClient.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response.StatusCode === 401) {
+    if (error.response.data.StatusCode === 401) {
       router.push("/login");
     }
     throw error.response.data;
